@@ -290,11 +290,12 @@ button,input{font-family:inherit;}
     <div class="admin-sec">
       <div class="admin-sec-title">Regras de pontuação</div>
       <div class="pt-editor">
-        <div class="pt-row"><div class="pt-lbl">🎯 Placar exato</div><input class="pt-inp" id="pt-exato" type="number" min="0" max="50"/><span style="font-size:12px;color:var(--texto-muted);">pts</span></div>
-        <div class="pt-row"><div class="pt-lbl">✅ Vencedor/empate (placar)</div><input class="pt-inp" id="pt-parcial" type="number" min="0" max="50"/><span style="font-size:12px;color:var(--texto-muted);">pts</span></div>
-        <div class="pt-row"><div class="pt-lbl">📊 Resultado certo (modo resultado)</div><input class="pt-inp" id="pt-resultado" type="number" min="0" max="50"/><span style="font-size:12px;color:var(--texto-muted);">pts</span></div>
-        <div class="pt-row"><div class="pt-lbl">❌ Errou</div><input class="pt-inp" id="pt-erro" type="number" min="0" max="50"/><span style="font-size:12px;color:var(--texto-muted);">pts</span></div>
-        <button class="btn-full" onclick="savePontuacao()">💾 Salvar regras</button>
+        <div style="background:#EAF3DE;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:#2E5C1A;">
+          ✅ Regras ativas para todos os participantes
+        </div>
+        <div class="pt-row"><div class="pt-lbl">🎯 Placar exato</div><div style="font-size:20px;font-weight:800;color:var(--verde);min-width:40px;text-align:right;">15</div><span style="font-size:12px;color:var(--texto-muted);">pts</span></div>
+        <div class="pt-row"><div class="pt-lbl">✅ Acertou o resultado</div><div style="font-size:20px;font-weight:800;color:var(--verde);min-width:40px;text-align:right;">10</div><span style="font-size:12px;color:var(--texto-muted);">pts</span></div>
+        <div class="pt-row"><div class="pt-lbl">❌ Errou</div><div style="font-size:20px;font-weight:800;color:#B71C1C;min-width:40px;text-align:right;">0</div><span style="font-size:12px;color:var(--texto-muted);">pts</span></div>
       </div>
     </div>
     <div class="admin-sec">
@@ -385,24 +386,45 @@ const JOGOS = [
 ];
 
 // ============================================================
-// STORAGE
+// FIREBASE CONFIG
 // ============================================================
+const FB_URL='https://bolao-hexa-2026-default-rtdb.firebaseio.com';
+
+async function fbGet(path){
+  try{const r=await fetch(FB_URL+path+'.json');if(!r.ok)return null;return await r.json();}
+  catch{return null;}
+}
+async function fbSet(path,data){
+  try{await fetch(FB_URL+path+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}
+  catch(e){console.error('fbSet:',e);}
+}
+async function fbUpdate(path,data){
+  try{await fetch(FB_URL+path+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}
+  catch(e){console.error('fbUpdate:',e);}
+}
+async function fbDelete(path){
+  try{await fetch(FB_URL+path+'.json',{method:'DELETE'});}
+  catch(e){console.error('fbDelete:',e);}
+}
+
+// localStorage só para sessão local
 const S={
   get(k){try{return JSON.parse(localStorage.getItem('bolao_'+k));}catch{return null;}},
   set(k,v){localStorage.setItem('bolao_'+k,JSON.stringify(v));},
   del(k){localStorage.removeItem('bolao_'+k);}
 };
+
+// Regras fixas — valem para todos os participantes
+const RULES_DEFAULT={exato:15,parcial:10,resultado:10,erro:0};
 let ME=S.get('me');
-let BETS=S.get('bets')||{};
-let PARTS=S.get('parts')||[];
-let RESULTS=S.get('results')||{};
-let RULES=S.get('rules')||{exato:10,parcial:5,resultado:3,erro:0};
+let BETS={};
+let PARTS=[];
+let RESULTS={};
+let RULES=RULES_DEFAULT;
 let adminLoggedIn=false;
 let curFiltro='todos';
 let autoTimer=null;
-
-// Monta JOGOS_DATA com resultados salvos
-let JOGOS_DATA=JOGOS.map(j=>({...j,resultado:RESULTS[j.id]||null}));
+let JOGOS_DATA=JOGOS.map(j=>({...j,resultado:null}));
 
 // ============================================================
 // BUSCA AUTOMÁTICA DE RESULTADOS — openfootball/worldcup.json
@@ -493,17 +515,19 @@ function minutosFaltando(j){return Math.floor((new Date(j.dataHora)-new Date())/
 
 function calcPts(bet,resultado){
   if(!resultado||!bet)return null;
-  const rules=S.get('rules')||RULES;
   if(bet.modo==='placar'){
     const ba=parseInt(bet.a),bb=parseInt(bet.b);
     if(isNaN(ba)||isNaN(bb))return null;
-    if(ba===resultado.a&&bb===resultado.b)return{pts:rules.exato,tipo:'acerto'};
-    if(vencedor(ba,bb)===vencedor(resultado.a,resultado.b))return{pts:rules.parcial,tipo:'parcial'};
-    return{pts:rules.erro,tipo:'erro'};
+    // Placar exato = 15 pts
+    if(ba===resultado.a&&bb===resultado.b)return{pts:15,tipo:'acerto'};
+    // Acertou só o resultado = 10 pts
+    if(vencedor(ba,bb)===vencedor(resultado.a,resultado.b))return{pts:10,tipo:'parcial'};
+    return{pts:0,tipo:'erro'};
   } else {
     if(!bet.resultado)return null;
-    if(bet.resultado===vencedor(resultado.a,resultado.b))return{pts:rules.resultado,tipo:'parcial'};
-    return{pts:rules.erro,tipo:'erro'};
+    // Modo resultado: acertou = 10 pts
+    if(bet.resultado===vencedor(resultado.a,resultado.b))return{pts:10,tipo:'parcial'};
+    return{pts:0,tipo:'erro'};
   }
 }
 
@@ -549,20 +573,72 @@ function doStep1(){
   setTimeout(()=>document.getElementById('d1').focus(),100);
   toast('📲 Código demo: 1234',3000);
 }
-function doConfirm(){
+async function doConfirm(){
   if(['d1','d2','d3','d4'].map(id=>document.getElementById(id).value).join('')!=='1234'){
     toast('❌ Código incorreto. Use 1234');return;
   }
-  let p=PARTS.find(x=>x.cel===window.__pC);
-  if(!p){p={id:uid(),nome:window.__pN,apelido:window.__pA,cel:window.__pC};PARTS.push(p);S.set('parts',PARTS);}
-  ME=p;S.set('me',ME);enterApp();
+  // Verifica se celular já existe no Firebase
+  const parts=await fbGet('/participantes');
+  const partsArr=parts?Object.values(parts):[];
+  let p=partsArr.find(x=>x.cel===window.__pC);
+  if(!p){
+    p={id:uid(),nome:window.__pN,apelido:window.__pA,cel:window.__pC};
+    await fbSet('/participantes/'+p.id,p);
+  }
+  ME=p;S.set('me',ME);
+  await enterApp();
 }
-function enterApp(){
+async function enterApp(){
   document.getElementById('login-screen').classList.remove('active');
   document.getElementById('main-tabs').style.display='flex';
   document.getElementById('nav-user-btn').textContent=ME.apelido||ME.nome.split(' ')[0];
+  // Carrega dados do Firebase
+  await carregarDadosFirebase();
   showTab('jogos');
-  iniciarAutoSync();
+  iniciarSyncFirebase();
+}
+
+async function carregarDadosFirebase(){
+  try{
+    // Participantes
+    const parts=await fbGet('/participantes');
+    PARTS=parts?Object.values(parts):[];
+    // Palpites do usuário atual
+    if(ME){
+      const bets=await fbGet('/palpites/'+ME.id);
+      if(bets) BETS[ME.id]=bets;
+    }
+    // Resultados
+    const results=await fbGet('/resultados');
+    if(results){
+      RESULTS=results;
+      JOGOS_DATA=JOGOS.map(j=>({...j,resultado:RESULTS[j.id]||null}));
+    }
+    // Palpites dos outros (para transparência)
+    const todosBets=await fbGet('/palpites');
+    if(todosBets) BETS=todosBets;
+  }catch(e){console.error('Firebase erro:',e);}
+}
+
+function iniciarSyncFirebase(){
+  if(autoTimer)clearInterval(autoTimer);
+  // Atualiza resultados e ranking a cada 3 minutos
+  autoTimer=setInterval(async()=>{
+    const results=await fbGet('/resultados');
+    if(results){
+      RESULTS=results;
+      JOGOS_DATA=JOGOS.map(j=>({...j,resultado:RESULTS[j.id]||null}));
+    }
+    const todosBets=await fbGet('/palpites');
+    if(todosBets){BETS=todosBets;}
+    const parts=await fbGet('/participantes');
+    if(parts)PARTS=Object.values(parts);
+    const aba=document.querySelector('.tab.active');
+    if(aba){
+      if(aba.textContent.includes('Ranking'))renderRanking();
+      if(aba.textContent.includes('Jogos'))renderJogos();
+    }
+  },3*60*1000);
 }
 function navUserClick(){if(ME)toast('Logado como '+(ME.apelido||ME.nome));}
 
@@ -725,7 +801,7 @@ function selResult(id,res){
     if(b)b.className='bet-opt'+(r===res?' sel-'+(r==='A'?'a':r==='E'?'e':'b'):'');
   });
 }
-function saveBet(jogoId,modo){
+async function saveBet(jogoId,modo){
   if(!ME){toast('⚠️ Faça login primeiro');return;}
   if(jogoJaComecou(JOGOS_DATA.find(j=>j.id===jogoId))){toast('🔒 Apostas encerradas');return;}
   let bet;
@@ -740,7 +816,9 @@ function saveBet(jogoId,modo){
     bet={resultado:res,modo:'resultado'};
   }
   if(!BETS[ME.id])BETS[ME.id]={};
-  BETS[ME.id][jogoId]=bet;S.set('bets',BETS);
+  BETS[ME.id][jogoId]=bet;
+  // Salva no Firebase
+  await fbSet('/palpites/'+ME.id+'/'+jogoId,bet);
   toast('✅ Palpite salvo!');renderJogos();
 }
 function shareWA(){
@@ -829,22 +907,27 @@ function renderAdminPanel(){
     <div class="stat-box"><div class="stat-n">${JOGOS_DATA.filter(j=>j.resultado).length}</div><div class="stat-l">Com resultado</div></div>
     <div class="stat-box"><div class="stat-n">${JOGOS_DATA.filter(j=>jogoJaComecou(j)&&!j.resultado).length}</div><div class="stat-l">Aguardando</div></div>`;
   renderJogosAdmin();
-  const rules=S.get('rules')||RULES;
+  const rules=RULES_DEFAULT;
   document.getElementById('pt-exato').value=rules.exato;
   document.getElementById('pt-parcial').value=rules.parcial;
   document.getElementById('pt-resultado').value=rules.resultado;
   document.getElementById('pt-erro').value=rules.erro;
   document.getElementById('part-count').textContent=PARTS.length;
-  const ap=document.getElementById('admin-parts');ap.innerHTML='';
-  PARTS.forEach(p=>{
+  // Recarrega participantes do Firebase
+  fbGet('/participantes').then(parts=>{
+    if(parts) PARTS=Object.values(parts);
+    document.getElementById('part-count').textContent=PARTS.length;
+    const ap=document.getElementById('admin-parts');ap.innerHTML='';
+    PARTS.forEach(p=>{
     const nb=Object.keys(BETS[p.id]||{}).length;
     const d=document.createElement('div');d.className='prow';
     d.innerHTML=`<div class="pav">${iniciais(p.apelido||p.nome)}</div>
       <div class="pinfo"><div class="pname">${p.nome} (${p.apelido})</div><div class="pphone">${p.cel} · ${nb} palpite${nb!==1?'s':''}</div></div>
       <div class="del-btn" onclick="confirmDel('${p.id}')">🗑️</div>`;
-    ap.appendChild(d);
+      ap.appendChild(d);
+    });
+    if(!PARTS.length)ap.innerHTML='<p style="font-size:13px;color:var(--texto-muted);">Nenhum participante ainda.</p>';
   });
-  if(!PARTS.length)ap.innerHTML='<p style="font-size:13px;color:var(--texto-muted);">Nenhum participante ainda.</p>';
 }
 
 function renderJogosAdmin(){
@@ -924,29 +1007,29 @@ function setAdminFiltro(f){
   renderJogosAdmin();
 }
 
-function salvarResAdmin(jogoId){
+async function salvarResAdmin(jogoId){
   const a=document.getElementById('adm-a-'+jogoId)?.value;
   const b=document.getElementById('adm-b-'+jogoId)?.value;
   if(a===''||a===null||b===''||b===null){toast('⚠️ Preencha os dois placares');return;}
-  RESULTS[jogoId]={a:parseInt(a),b:parseInt(b)};
-  S.set('results',RESULTS);
-  JOGOS_DATA=JOGOS_DATA.map(j=>j.id===jogoId?{...j,resultado:{a:parseInt(a),b:parseInt(b)}}:j);
-  toast('✅ Resultado salvo! Ranking atualizado.');
+  const res={a:parseInt(a),b:parseInt(b)};
+  RESULTS[jogoId]=res;
+  // Salva no Firebase — visível para todos
+  await fbSet('/resultados/'+jogoId,res);
+  JOGOS_DATA=JOGOS_DATA.map(j=>j.id===jogoId?{...j,resultado:res}:j);
+  toast('✅ Resultado salvo! Ranking atualizado para todos.');
   renderAdminPanel();
 }
 
-function editarResultado(jogoId){
-  RESULTS[jogoId]=null;
+async function editarResultado(jogoId){
   delete RESULTS[jogoId];
-  S.set('results',RESULTS);
+  await fbDelete('/resultados/'+jogoId);
   JOGOS_DATA=JOGOS_DATA.map(j=>j.id===jogoId?{...j,resultado:null}:j);
   adminFiltro='pendentes';
   renderAdminPanel();
   toast('✏️ Resultado removido. Insira o novo placar.');
 }
 function savePontuacao(){
-  const r={exato:+document.getElementById('pt-exato').value||10,parcial:+document.getElementById('pt-parcial').value||5,resultado:+document.getElementById('pt-resultado').value||3,erro:+document.getElementById('pt-erro').value||0};
-  RULES=r;S.set('rules',r);toast('✅ Regras salvas!');
+  toast('⚠️ Para alterar as regras para todos, atualize o arquivo HTML no GitHub.');
 }
 function confirmDel(uid){
   const p=PARTS.find(x=>x.id===uid);
@@ -955,20 +1038,30 @@ function confirmDel(uid){
   document.getElementById('del-modal').classList.add('open');
 }
 function closeModal(){document.getElementById('del-modal').classList.remove('open');}
-function deletePart(uid){
-  PARTS=PARTS.filter(p=>p.id!==uid);delete BETS[uid];
-  S.set('parts',PARTS);S.set('bets',BETS);
+async function deletePart(uid){
+  PARTS=PARTS.filter(p=>p.id!==uid);
+  delete BETS[uid];
+  await fbDelete('/participantes/'+uid);
+  await fbDelete('/palpites/'+uid);
   if(ME&&ME.id===uid){ME=null;S.del('me');}
   closeModal();toast('🗑️ Participante removido.');renderAdminPanel();
 }
-function exportData(){
-  const blob=new Blob([JSON.stringify({participantes:PARTS,palpites:BETS,resultados:RESULTS,regras:RULES,ranking:getRanking(),data:new Date().toLocaleString('pt-BR')},null,2)],{type:'application/json'});
+async function exportData(){
+  const parts=await fbGet('/participantes')||{};
+  const bets=await fbGet('/palpites')||{};
+  const results=await fbGet('/resultados')||{};
+  const data={participantes:Object.values(parts),palpites:bets,resultados:results,regras:RULES_DEFAULT,data:new Date().toLocaleString('pt-BR')};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bolao-dados.json';a.click();
   toast('📊 Dados exportados!');
 }
-function clearAll(){
-  if(!confirm('Apagar TODOS os dados?'))return;
-  ['me','bets','parts','results','rules','lastSync'].forEach(k=>S.del(k));location.reload();
+async function clearAll(){
+  if(!confirm('Apagar TODOS os dados do Firebase? Não tem volta!'))return;
+  await fbDelete('/participantes');
+  await fbDelete('/palpites');
+  await fbDelete('/resultados');
+  S.del('me');
+  location.reload();
 }
 
 // ============================================================
@@ -979,8 +1072,7 @@ window.addEventListener('load',()=>{
     document.getElementById('login-screen').classList.remove('active');
     document.getElementById('main-tabs').style.display='flex';
     document.getElementById('nav-user-btn').textContent=ME.apelido||ME.nome.split(' ')[0];
-    showTab('jogos');
-    iniciarAutoSync();
+    enterApp();
   }
 });
 </script>
