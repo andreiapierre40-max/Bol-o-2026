@@ -177,6 +177,7 @@ button,input{font-family:inherit;}
 .filtro-admin{display:flex;gap:6px;margin-bottom:12px;}
 .fbtn-admin{background:var(--fundo);border:1.5px solid var(--borda);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--texto-muted);cursor:pointer;white-space:nowrap;}
 .fbtn-admin.active{background:var(--verde);color:#fff;border-color:var(--verde);}
+.rank-loading{text-align:center;padding:30px 20px;color:rgba(255,255,255,0.6);font-size:14px;}
 </style>
 </head>
 <body>
@@ -241,8 +242,8 @@ button,input{font-family:inherit;}
 <div class="screen" id="ranking-screen">
   <div class="rank-hero">
     <div class="rank-hero-title">🏆 Ranking Geral</div>
-    <div class="rank-hero-sub" id="rank-sub">Atualizado ao vivo</div>
-    <div class="podium-row" id="podium"></div>
+    <div class="rank-hero-sub" id="rank-sub">Carregando...</div>
+    <div class="podium-row" id="podium"><div class="rank-loading">⏳ Buscando participantes...</div></div>
   </div>
   <div class="rank-list" id="rank-list"></div>
   <div style="height:16px;"></div>
@@ -507,7 +508,6 @@ function deduplicarParticipantes(lista){
     if(!existente){
       mapa[cel]=p;
     } else {
-      // Prefere registros com chave cel_ (novo padrão único)
       const novoPadrao=p.id&&p.id.startsWith('cel_');
       const existentePadrao=existente.id&&existente.id.startsWith('cel_');
       if(novoPadrao&&!existentePadrao) mapa[cel]=p;
@@ -516,7 +516,6 @@ function deduplicarParticipantes(lista){
   return Object.values(mapa);
 }
 
-// Remove duplicatas do Firebase e mescla palpites para o registro válido
 async function limparDuplicatasFirebase(partsRaw,partsDedupadas){
   try{
     const idsValidos=new Set(partsDedupadas.map(p=>p.id));
@@ -528,7 +527,6 @@ async function limparDuplicatasFirebase(partsRaw,partsDedupadas){
         const betsAntigos=await fbGet('/palpites/'+p.id);
         if(betsAntigos){
           const betsAtuais=await fbGet('/palpites/'+partValida.id)||{};
-          // Mescla: palpites mais recentes (do registro válido) têm prioridade
           const betsMerge={...betsAntigos,...betsAtuais};
           await fbSet('/palpites/'+partValida.id,betsMerge);
         }
@@ -541,11 +539,38 @@ async function limparDuplicatasFirebase(partsRaw,partsDedupadas){
   }catch(e){console.warn('limparDuplicatasFirebase:',e);}
 }
 
-function getRanking(){
+// ── RANKING: sempre busca dados frescos do Firebase ───────────────────────────
+async function getRankingFresco(){
+  // Busca participantes, palpites e resultados direto do Firebase
+  const [partsRaw, todosBets, resultsFB] = await Promise.all([
+    fbGet('/participantes'),
+    fbGet('/palpites'),
+    fbGet('/resultados')
+  ]);
+
+  // Atualiza variáveis globais
+  if(resultsFB){
+    RESULTS=resultsFB;
+    JOGOS_DATA=JOGOS.map(j=>({...j,resultado:RESULTS[j.id]||null}));
+  }
+  if(todosBets) BETS=todosBets;
+
+  const listaRaw = partsRaw ? Object.values(partsRaw) : [];
+  const lista = deduplicarParticipantes(listaRaw);
+
+  // Limpa duplicatas automaticamente se encontradas
+  if(listaRaw.length > lista.length){
+    limparDuplicatasFirebase(listaRaw, lista); // sem await para não bloquear
+  }
+
+  // Atualiza PARTS global
+  PARTS = lista;
+
+  // Calcula pontuação de cada participante
   const rk=[];
-  PARTS.forEach(p=>{
+  lista.forEach(p=>{
     let total=0,acertos=0,exatos=0;
-    const ub=BETS[p.id]||{};
+    const ub=(BETS[p.id])||{};
     JOGOS_DATA.forEach(j=>{
       if(!j.resultado)return;
       const r=calcPts(ub[j.id],j.resultado);
@@ -582,7 +607,6 @@ function doStep1(){
   toast('📲 Código demo: 1234',3000);
 }
 
-// Usa celular normalizado como chave única no Firebase
 async function doConfirm(){
   if(['d1','d2','d3','d4'].map(id=>document.getElementById(id).value).join('')!=='1234'){
     toast('❌ Código incorreto. Use 1234');return;
@@ -592,7 +616,6 @@ async function doConfirm(){
   const existing=await fbGet('/participantes/'+fbKey);
   let p;
   if(existing){
-    // Participante já existe: atualiza nome/apelido se mudou
     p={...existing,nome:window.__pN,apelido:window.__pA};
     await fbSet('/participantes/'+fbKey,p);
   } else {
@@ -600,7 +623,6 @@ async function doConfirm(){
     await fbSet('/participantes/'+fbKey,p);
   }
   ME=p;S.set('me',ME);
-  // Migra palpites antigos (de IDs aleatórios) para a nova chave do celular
   await migrarPalpitesAntigos(celKey,fbKey);
   await enterApp();
 }
@@ -609,7 +631,7 @@ async function migrarPalpitesAntigos(celKey,fbKey){
   try{
     const todosBets=await fbGet('/palpites');
     if(!todosBets) return;
-    if(todosBets[fbKey]) return; // já tem palpites na chave nova
+    if(todosBets[fbKey]) return;
     const meSalvo=S.get('me');
     if(meSalvo&&meSalvo.id!==fbKey&&todosBets[meSalvo.id]){
       await fbSet('/palpites/'+fbKey,todosBets[meSalvo.id]);
@@ -630,26 +652,21 @@ async function enterApp(){
 
 async function carregarDadosFirebase(){
   try{
-    // Participantes — desduplicar por celular
     const parts=await fbGet('/participantes');
     const partsRaw=parts?Object.values(parts):[];
     PARTS=deduplicarParticipantes(partsRaw);
-    // Limpa duplicatas automaticamente no Firebase se encontradas
     if(partsRaw.length>PARTS.length){
       await limparDuplicatasFirebase(partsRaw,PARTS);
     }
-    // Palpites do usuário atual
     if(ME){
       const bets=await fbGet('/palpites/'+ME.id);
       if(bets) BETS[ME.id]=bets;
     }
-    // Resultados
     const results=await fbGet('/resultados');
     if(results){
       RESULTS=results;
       JOGOS_DATA=JOGOS.map(j=>({...j,resultado:RESULTS[j.id]||null}));
     }
-    // Palpites de todos (para transparência)
     const todosBets=await fbGet('/palpites');
     if(todosBets) BETS=todosBets;
   }catch(e){console.error('Firebase erro:',e);}
@@ -858,10 +875,16 @@ function shareWA(){
   window.open('https://wa.me/?text='+encodeURIComponent('🏆 Participe do Bolão Copa 2026!\n'+window.location.href.split('?')[0]));
 }
 
-// ── RANKING ───────────────────────────────────────────────────────────────────
-function renderRanking(){
-  const rk=getRanking();
-  document.getElementById('rank-sub').textContent=`${rk.length} participante${rk.length!==1?'s':''} · Atualizado automaticamente`;
+// ── RANKING: busca dados frescos sempre que a aba é aberta ────────────────────
+async function renderRanking(){
+  // Mostra estado de carregamento
+  document.getElementById('rank-sub').textContent='⏳ Buscando participantes...';
+  document.getElementById('podium').innerHTML='<div class="rank-loading">⏳ Carregando...</div>';
+  document.getElementById('rank-list').innerHTML='';
+
+  const rk = await getRankingFresco();
+
+  document.getElementById('rank-sub').textContent=`${rk.length} participante${rk.length!==1?'s':''} · Atualizado ao vivo`;
   const medals=['🥈','🥇','🥉'],sizes=['46px','58px','40px'],bgs=['#A8A8A8','var(--dourado)','#CD7F32'],clrs=['#fff','var(--verde)','#fff'];
   const order=[1,0,2];
   document.getElementById('podium').innerHTML=order.map(i=>{
@@ -1065,7 +1088,6 @@ async function exportData(){
   toast('📊 Dados exportados!');
 }
 
-// ── LIMPEZA MANUAL DE DUPLICATAS (admin) ──────────────────────────────────────
 async function limparDuplicatasManual(){
   const parts=await fbGet('/participantes');
   if(!parts){toast('Nenhum participante encontrado.');return;}
