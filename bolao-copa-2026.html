@@ -11,7 +11,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 button,input{font-family:inherit;}
 .nav{background:var(--verde);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
 .nav-logo{color:var(--dourado);font-weight:800;font-size:17px;}
-.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-right{display:flex;align-items:center;gap:8px;}A
 .sync-btn{background:rgba(200,168,75,0.12);border:1px solid rgba(200,168,75,0.25);color:var(--dourado-claro);padding:5px 10px;border-radius:14px;font-size:12px;font-weight:600;cursor:pointer;}
 .sync-btn.syncing{animation:spin 1s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -293,6 +293,13 @@ button,input{font-family:inherit;}
       </div>
     </div>
     <div class="admin-sec">
+    <div class="admin-sec">
+      <div class="admin-sec-title">🎖️ Pontos manuais (bônus)</div>
+      <div class="pt-editor" style="background:var(--branco);border-radius:12px;border:1px solid var(--borda);padding:14px;">
+        <div style="background:#FFF8E1;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:#5D4037;">⚠️ Use para corrigir pontos não computados automaticamente.</div>
+        <div id="bonus-list"></div>
+      </div>
+    </div>
       <div class="admin-sec-title">Participantes (<span id="part-count">0</span>)</div>
       <div id="admin-parts"></div>
     </div>
@@ -547,14 +554,13 @@ async function limparDuplicatasFirebase(partsRaw,partsDedupadas){
 
 // ── RANKING: sempre busca dados frescos do Firebase ───────────────────────────
 async function getRankingFresco(){
-  // Busca participantes, palpites e resultados direto do Firebase
-  const [partsRaw, todosBets, resultsFB] = await Promise.all([
+  const [partsRaw, todosBets, resultsFB, bonus] = await Promise.all([
     fbGet('/participantes'),
     fbGet('/palpites'),
-    fbGet('/resultados')
+    fbGet('/resultados'),
+    fbGet('/bonus')
   ]);
 
-  // Atualiza variáveis globais
   if(resultsFB){
     RESULTS=resultsFB;
     JOGOS_DATA=JOGOS.map(j=>({...j,resultado:RESULTS[j.id]||null}));
@@ -564,15 +570,12 @@ async function getRankingFresco(){
   const listaRaw = partsRaw ? Object.values(partsRaw) : [];
   const lista = deduplicarParticipantes(listaRaw);
 
-  // Limpa duplicatas automaticamente se encontradas
   if(listaRaw.length > lista.length){
-    limparDuplicatasFirebase(listaRaw, lista); // sem await para não bloquear
+    limparDuplicatasFirebase(listaRaw, lista);
   }
 
-  // Atualiza PARTS global
   PARTS = lista;
 
-  // Calcula pontuação de cada participante
   const rk=[];
   lista.forEach(p=>{
     let total=0,acertos=0,exatos=0;
@@ -585,7 +588,9 @@ async function getRankingFresco(){
       if(r.tipo==='acerto'){acertos++;exatos++;}
       else if(r.tipo==='parcial') acertos++;
     });
-    rk.push({...p,total,acertos,exatos});
+    const bonusPts = (bonus && bonus[p.id]) ? parseInt(bonus[p.id]) : 0;
+    total += bonusPts;
+    rk.push({...p,total,acertos,exatos,bonus:bonusPts});
   });
   return rk.sort((a,b)=>b.total-a.total||b.acertos-a.acertos);
 }
@@ -970,6 +975,7 @@ function renderAdminPanel(){
     <div class="stat-box"><div class="stat-n">${JOGOS_DATA.filter(j=>j.resultado).length}</div><div class="stat-l">Com resultado</div></div>
     <div class="stat-box"><div class="stat-n">${JOGOS_DATA.filter(j=>jogoJaComecou(j)&&!j.resultado).length}</div><div class="stat-l">Aguardando</div></div>`;
   renderJogosAdmin();
+  renderBonusList();
   document.getElementById('part-count').textContent=PARTS.length;
   fbGet('/participantes').then(parts=>{
     if(parts){
@@ -1224,6 +1230,38 @@ async function migrarTodosPalpitesAntigos(){
   await carregarDadosFirebase();
   renderAdminPanel();
   toast('✅ Migração concluída! Verifique o ranking agora.');
+}
+
+// ── PONTOS MANUAIS (BÔNUS) ───────────────────────────────────────────────────
+async function renderBonusList(){
+  const bonusEl = document.getElementById('bonus-list');
+  if(!bonusEl) return;
+  const bonus = await fbGet('/bonus') || {};
+  bonusEl.innerHTML = '';
+  PARTS.forEach(p=>{
+    const pts = bonus[p.id] || 0;
+    const div = document.createElement('div');
+    div.className = 'pt-row';
+    div.style.borderBottom = '1px solid var(--borda)';
+    div.style.paddingBottom = '10px';
+    div.style.marginBottom = '10px';
+    div.innerHTML = `
+      <div class="pt-lbl" style="font-weight:700;">${p.apelido||p.nome}</div>
+      <input type="number" value="${pts}" min="0" id="bonus-${p.id}" 
+        style="width:70px;border:1.5px solid #D0DDD4;border-radius:8px;padding:6px 8px;font-size:16px;font-weight:800;text-align:center;color:var(--verde);outline:none;background:var(--branco);">
+      <span style="font-size:12px;color:var(--texto-muted);">pts</span>
+      <button onclick="salvarBonus('${p.id}')" style="background:var(--verde-medio);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-left:4px;">💾</button>`;
+    bonusEl.appendChild(div);
+  });
+  if(!PARTS.length) bonusEl.innerHTML = '<p style="font-size:13px;color:var(--texto-muted);">Nenhum participante cadastrado.</p>';
+}
+
+async function salvarBonus(partId){
+  const inp = document.getElementById('bonus-'+partId);
+  if(!inp) return;
+  const pts = parseInt(inp.value) || 0;
+  await fbSet('/bonus/'+partId, pts);
+  toast('✅ Bônus salvo!');
 }
 
 async function clearAll(){
