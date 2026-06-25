@@ -297,6 +297,7 @@ button,input{font-family:inherit;}
       <div id="admin-parts"></div>
     </div>
     <div class="admin-sec">
+      <button class="btn-full" style="background:#6A1B9A;" onclick="migrarTodosPalpitesAntigos()">🔁 Migrar palpites antigos (IDs aleatórios)</button>
       <button class="btn-full btn-dourado" onclick="exportData()">📊 Exportar dados (JSON)</button>
       <button class="btn-full" style="background:#1565C0;" onclick="limparDuplicatasManual()">🧹 Limpar duplicatas do ranking</button>
       <button class="btn-full" onclick="clearAll()">🗑️ Reset geral</button>
@@ -1105,6 +1106,117 @@ async function limparDuplicatasManual(){
   PARTS=dedup;
   toast('✅ '+nDup+' duplicata(s) removida(s) com sucesso!');
   renderAdminPanel();
+}
+
+// ── MIGRAÇÃO DE PALPITES COM IDs ALEATÓRIOS ──────────────────────────────────
+// Busca todos os palpites com IDs antigos (não cel_), cruza com participantes
+// pelo celular e migra tudo para a chave cel_ correta no Firebase.
+async function migrarTodosPalpitesAntigos(){
+  if(!confirm('Isso vai migrar todos os palpites com IDs antigos para as chaves cel_ corretas.\nOs palpites originais NÃO serão apagados até você confirmar.\n\nContinuar?')) return;
+
+  toast('⏳ Buscando dados...', 5000);
+
+  const [partsRaw, todosBalcao] = await Promise.all([
+    fbGet('/participantes'),
+    fbGet('/palpites')
+  ]);
+
+  if(!partsRaw || !todosBalcao){
+    toast('❌ Erro ao buscar dados do Firebase.');
+    return;
+  }
+
+  const parts = Object.values(partsRaw);
+  const palpitesIds = Object.keys(todosBalcao);
+
+  // Separa IDs antigos (não começam com cel_)
+  const idsAntigos = palpitesIds.filter(id => !id.startsWith('cel_'));
+
+  if(idsAntigos.length === 0){
+    toast('✅ Nenhum palpite antigo encontrado! Tudo já está migrado.');
+    return;
+  }
+
+  // Monta mapa de celular → participante (chave cel_)
+  const mapaCel = {};
+  parts.forEach(p => {
+    if(p.id && p.id.startsWith('cel_') && p.cel){
+      const celNum = p.cel.replace(/\D/g,'');
+      mapaCel[celNum] = p.id;
+    }
+  });
+
+  let migrados = 0;
+  let semDono = 0;
+  const log = [];
+
+  for(const idAntigo of idsAntigos){
+    // Tenta achar o participante pelo celular nos participantes
+    // Primeiro verifica se existe participante com este id antigo
+    const partAntigo = parts.find(p => p.id === idAntigo);
+
+    let novaCelKey = null;
+
+    if(partAntigo && partAntigo.cel){
+      // Participante ainda existe com ID antigo — cria a chave cel_ nova
+      const celNum = partAntigo.cel.replace(/\D/g,'');
+      novaCelKey = 'cel_' + celNum;
+
+      // Cria o participante com a chave nova se não existir
+      const partExistente = await fbGet('/participantes/' + novaCelKey);
+      if(!partExistente){
+        await fbSet('/participantes/' + novaCelKey, {
+          id: novaCelKey,
+          nome: partAntigo.nome,
+          apelido: partAntigo.apelido,
+          cel: partAntigo.cel
+        });
+      }
+    } else {
+      // Participante não encontrado com este ID — pula
+      semDono++;
+      log.push('⚠️ Sem dono: ' + idAntigo);
+      continue;
+    }
+
+    if(!novaCelKey) { semDono++; continue; }
+
+    // Mescla palpites: antigos + novos (novos têm prioridade)
+    const palpitesAntigos = todosBalcao[idAntigo] || {};
+    const palpitesNovos = await fbGet('/palpites/' + novaCelKey) || {};
+    const palpitesMerge = { ...palpitesAntigos, ...palpitesNovos };
+
+    await fbSet('/palpites/' + novaCelKey, palpitesMerge);
+
+    migrados++;
+    log.push('✅ ' + (partAntigo?.nome || idAntigo) + ' → ' + novaCelKey);
+  }
+
+  console.log('Migração concluída:', log);
+
+  if(migrados > 0){
+    const confirmDelete = confirm(
+      `✅ ${migrados} apostador(es) migrado(s) com sucesso!\n` +
+      (semDono > 0 ? `⚠️ ${semDono} sem participante encontrado.\n` : '') +
+      `\nDeseja remover os registros antigos do Firebase agora?`
+    );
+    if(confirmDelete){
+      for(const idAntigo of idsAntigos){
+        const partAntigo = parts.find(p => p.id === idAntigo);
+        if(partAntigo){
+          await fbDelete('/participantes/' + idAntigo);
+          await fbDelete('/palpites/' + idAntigo);
+        }
+      }
+      toast('🗑️ Registros antigos removidos!');
+    }
+  } else {
+    toast('⚠️ Nenhum palpite migrado. Verifique o console.');
+  }
+
+  await carregarDadosFirebase();
+  renderAdminPanel();
+  toast('✅ Migração concluída! Verifique o ranking agora.');
 }
 
 async function clearAll(){
