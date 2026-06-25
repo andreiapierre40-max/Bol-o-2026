@@ -485,15 +485,20 @@ function minutosFaltando(j){return Math.floor((new Date(j.dataHora)-new Date())/
 
 function calcPts(bet,resultado){
   if(!resultado||!bet)return null;
-  if(bet.modo==='placar'){
+  // Detecta o modo: se tem campos a/b numéricos é placar, senão é resultado
+  const modo = bet.modo || (bet.a!==undefined && bet.b!==undefined ? 'placar' : 'resultado');
+  if(modo==='placar'){
     const ba=parseInt(bet.a),bb=parseInt(bet.b);
     if(isNaN(ba)||isNaN(bb))return null;
     if(ba===resultado.a&&bb===resultado.b)return{pts:15,tipo:'acerto'};
     if(vencedor(ba,bb)===vencedor(resultado.a,resultado.b))return{pts:10,tipo:'parcial'};
     return{pts:0,tipo:'erro'};
   } else {
-    if(!bet.resultado)return null;
-    if(bet.resultado===vencedor(resultado.a,resultado.b))return{pts:10,tipo:'parcial'};
+    // modo resultado: aceita campo 'resultado' ou 'res' por segurança
+    const resApostado = bet.resultado || bet.res;
+    if(!resApostado) return null;
+    const resReal = vencedor(resultado.a, resultado.b);
+    if(resApostado === resReal) return{pts:10,tipo:'parcial'};
     return{pts:0,tipo:'erro'};
   }
 }
@@ -755,7 +760,7 @@ function buildCard(jogo,ub){
   const hasBet=!!bet;
   const comecou=jogoJaComecou(jogo);
   const hasResult=!!jogo.resultado;
-  const curMode=betModes[jogo.id]||(bet?bet.modo:'placar');
+  const curMode=betModes[jogo.id]!==undefined?betModes[jogo.id]:(bet?bet.modo:'placar');
   const minFalt=minutosFaltando(jogo);
 
   let statusTag='';
