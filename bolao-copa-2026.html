@@ -702,7 +702,14 @@ function iniciarSyncFirebase(){
   },3*60*1000);
 }
 
-function navUserClick(){if(ME)toast('Logado como '+(ME.apelido||ME.nome));}
+function navUserClick(){
+  if(!ME) return;
+  if(confirm('Logado como '+(ME.apelido||ME.nome)+'\n\nDeseja sair para trocar de conta?')){
+    S.del('me');
+    ME=null;
+    location.reload();
+  }
+}
 
 // ── TABS ─────────────────────────────────────────────────────────────────────
 function showTab(tab){
