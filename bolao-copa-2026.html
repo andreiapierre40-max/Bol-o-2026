@@ -267,7 +267,7 @@ button,input{font-family:inherit;}
         <label class="form-label">Senha</label>
         <input class="form-input" id="admin-pass-inp" type="password" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')checkAdminPass()"/>
         <button class="btn-verde" onclick="checkAdminPass()">Entrar como admin</button>
-        <p class="login-hint" style="margin-top:10px;">Senha padrão: <strong>admin2026</strong></p>
+        <p class="login-hint" style="margin-top:10px;">Digite a senha de administrador.</p>
       </div>
     </div>
   </div>
@@ -974,7 +974,7 @@ function renderPalpites(){
 }
 
 function checkAdminPass(){
-  if(document.getElementById('admin-pass-inp').value==='admin2026'){
+  if(document.getElementById('admin-pass-inp').value==='jugama'){
     adminLoggedIn=true;
     document.getElementById('admin-login-wall').style.display='none';
     document.getElementById('admin-panel').style.display='block';
