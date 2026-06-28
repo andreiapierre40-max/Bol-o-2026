@@ -430,6 +430,26 @@ const API_URL='https://raw.githubusercontent.com/openfootball/worldcup.json/mast
 async function buscarResultados(manual=false){
   const btn=document.getElementById('sync-btn');
   if(btn) btn.textContent='🔄';
+
+  // Sempre busca palpites e participantes frescos do Firebase
+  try{
+    const [todosBetsFB, partsFB, resultsFB] = await Promise.all([
+      fbGet('/palpites'),
+      fbGet('/participantes'),
+      fbGet('/resultados')
+    ]);
+    if(todosBetsFB) BETS=todosBetsFB;
+    if(partsFB){
+      const raw=Object.values(partsFB);
+      PARTS=deduplicarParticipantes(raw);
+    }
+    if(resultsFB){
+      RESULTS=resultsFB;
+      JOGOS_DATA=JOGOS.map(j=>({...j,resultado:RESULTS[j.id]||null}));
+    }
+  }catch(e){console.warn('Sync Firebase:',e);}
+
+  // Tenta buscar resultados da API externa
   try{
     const resp=await fetch(API_URL+'?t='+Date.now());
     if(!resp.ok) throw new Error('HTTP '+resp.status);
@@ -462,17 +482,17 @@ async function buscarResultados(manual=false){
     if(novos>0){
       S.set('results',RESULTS);
       toast(`✅ ${novos} resultado${novos>1?'s':''} atualizado${novos>1?'s':''}!`);
-      renderJogos();
-    } else if(manual){
-      toast('✅ Dados já atualizados!');
     }
     const agora=new Date().toLocaleTimeString('pt-BR');
     S.set('lastSync',agora);
-    mostrarSyncBar('✅ Resultados verificados às '+agora+(novos>0?' · '+novos+' atualizados':''),false);
+    mostrarSyncBar('✅ Sincronizado às '+agora+(novos>0?' · '+novos+' resultado(s) novo(s)':''),false);
+    if(manual) toast(novos>0?`✅ ${novos} resultado(s) atualizado(s)!`:'✅ Tudo atualizado!');
   }catch(e){
-    if(manual) toast('⚠️ Sem conexão. Tentando de novo em 5 min.');
-    mostrarSyncBar('⚠️ Sem conexão com API. Tentando novamente...',true);
+    if(manual) toast('⚠️ Sem conexão com API. Palpites atualizados!');
+    mostrarSyncBar('⚠️ API indisponível — palpites sincronizados via Firebase',false);
   }
+
+  renderJogos();
   if(btn) btn.textContent='🔄 Sync';
 }
 
