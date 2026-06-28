@@ -917,14 +917,18 @@ async function renderRanking(){
   const rk = await getRankingFresco();
 
   document.getElementById('rank-sub').textContent=`${rk.length} participante${rk.length!==1?'s':''} · Atualizado ao vivo`;
-  const medals=['🥈','🥇','🥉'],sizes=['46px','58px','40px'],bgs=['#A8A8A8','var(--dourado)','#CD7F32'],clrs=['#fff','var(--verde)','#fff'];
-  const order=[1,0,2];
-  document.getElementById('podium').innerHTML=order.map(i=>{
-    const p=rk[i];if(!p)return'';
+  // pódio: rk[0]=1º(ouro/centro), rk[1]=2º(prata/esquerda), rk[2]=3º(bronze/direita)
+  const podiumConfig = [
+    {rankIdx:1, medal:'🥈', size:'46px', bg:'#A8A8A8', clr:'#fff', fontSize:'16px', order:1},
+    {rankIdx:0, medal:'🥇', size:'58px', bg:'var(--dourado)', clr:'var(--verde)', fontSize:'18px', order:2},
+    {rankIdx:2, medal:'🥉', size:'40px', bg:'#CD7F32', clr:'#fff', fontSize:'14px', order:3},
+  ];
+  document.getElementById('podium').innerHTML=podiumConfig.map(cfg=>{
+    const p=rk[cfg.rankIdx];if(!p)return'';
     const isMe=ME&&p.id===ME.id;
-    return`<div class="pod-item" style="order:${i===0?2:i===1?1:3}">
-      <div style="font-size:20px;">${medals[i]}</div>
-      <div class="pod-av" style="width:${sizes[i]};height:${sizes[i]};font-size:${i===0?'16px':'14px'};background:${bgs[i]};color:${clrs[i]}${isMe?';border:2px solid var(--dourado-claro)':''}">${iniciais(p.apelido||p.nome)}</div>
+    return`<div class="pod-item" style="order:${cfg.order}">
+      <div style="font-size:20px;">${cfg.medal}</div>
+      <div class="pod-av" style="width:${cfg.size};height:${cfg.size};font-size:${cfg.fontSize};background:${cfg.bg};color:${cfg.clr}${isMe?';border:2px solid var(--dourado-claro)':''}">${iniciais(p.apelido||p.nome)}</div>
       <div class="pod-name">${p.apelido||p.nome.split(' ')[0]}</div>
       <div class="pod-pts">${p.total} pts</div>
     </div>`;
