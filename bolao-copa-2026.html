@@ -11,7 +11,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 button,input{font-family:inherit;}
 .nav{background:var(--verde);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
 .nav-logo{color:var(--dourado);font-weight:800;font-size:17px;}
-.nav-right{display:flex;align-items:center;gap:8px;}A
+.nav-right{display:flex;align-items:center;gap:8px;}
 .sync-btn{background:rgba(200,168,75,0.12);border:1px solid rgba(200,168,75,0.25);color:var(--dourado-claro);padding:5px 10px;border-radius:14px;font-size:12px;font-weight:600;cursor:pointer;}
 .sync-btn.syncing{animation:spin 1s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -350,22 +350,24 @@ const JOGOS = [
   {id:22,tA:'Congo (RD)',fA:'🇨🇩',tB:'Uzbequistão',fB:'🇺🇿',data:'27/06',hora:'20:30',dataHora:'2026-06-27T20:30:00-03:00',local:'Atlanta',fase:'3ª Rodada',grupo:'Grupo K',apiTeamA:'DR Congo',apiTeamB:'Uzbekistan'},
   {id:23,tA:'Argélia',fA:'🇩🇿',tB:'Áustria',fB:'🇦🇹',data:'27/06',hora:'23:00',dataHora:'2026-06-27T23:00:00-03:00',local:'Kansas City',fase:'3ª Rodada',grupo:'Grupo J',apiTeamA:'Algeria',apiTeamB:'Austria'},
   {id:24,tA:'Jordânia',fA:'🇯🇴',tB:'Argentina',fB:'🇦🇷',data:'27/06',hora:'23:00',dataHora:'2026-06-27T23:00:00-03:00',local:'Dallas',fase:'3ª Rodada',grupo:'Grupo J',apiTeamA:'Jordan',apiTeamB:'Argentina'},
-  {id:25,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'28/06',hora:'16:00',dataHora:'2026-06-28T16:00:00-03:00',local:'Los Angeles',fase:'Rodada de 32',grupo:''},
-  {id:26,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'29/06',hora:'14:00',dataHora:'2026-06-29T14:00:00-03:00',local:'Houston',fase:'Rodada de 32',grupo:''},
-  {id:27,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'29/06',hora:'17:30',dataHora:'2026-06-29T17:30:00-03:00',local:'Boston',fase:'Rodada de 32',grupo:''},
-  {id:28,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'29/06',hora:'22:00',dataHora:'2026-06-29T22:00:00-03:00',local:'Monterrey',fase:'Rodada de 32',grupo:''},
-  {id:29,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'30/06',hora:'14:00',dataHora:'2026-06-30T14:00:00-03:00',local:'Dallas',fase:'Rodada de 32',grupo:''},
-  {id:30,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'30/06',hora:'18:00',dataHora:'2026-06-30T18:00:00-03:00',local:'Nova York/NJ',fase:'Rodada de 32',grupo:''},
-  {id:31,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'30/06',hora:'22:00',dataHora:'2026-06-30T22:00:00-03:00',local:'Cidade do México',fase:'Rodada de 32',grupo:''},
-  {id:32,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'01/07',hora:'13:00',dataHora:'2026-07-01T13:00:00-03:00',local:'Atlanta',fase:'Rodada de 32',grupo:''},
-  {id:33,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'01/07',hora:'17:00',dataHora:'2026-07-01T17:00:00-03:00',local:'Seattle',fase:'Rodada de 32',grupo:''},
-  {id:34,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'01/07',hora:'21:00',dataHora:'2026-07-01T21:00:00-03:00',local:'San Francisco',fase:'Rodada de 32',grupo:''},
-  {id:35,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'02/07',hora:'16:00',dataHora:'2026-07-02T16:00:00-03:00',local:'Los Angeles',fase:'Rodada de 32',grupo:''},
-  {id:36,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'02/07',hora:'20:00',dataHora:'2026-07-02T20:00:00-03:00',local:'Toronto',fase:'Rodada de 32',grupo:''},
-  {id:37,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'03/07',hora:'00:00',dataHora:'2026-07-03T00:00:00-03:00',local:'Vancouver',fase:'Rodada de 32',grupo:''},
-  {id:38,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'03/07',hora:'15:00',dataHora:'2026-07-03T15:00:00-03:00',local:'Dallas',fase:'Rodada de 32',grupo:''},
-  {id:39,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'03/07',hora:'17:00',dataHora:'2026-07-03T17:00:00-03:00',local:'Atlanta',fase:'Rodada de 32',grupo:''},
-  {id:40,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'03/07',hora:'22:30',dataHora:'2026-07-03T22:30:00-03:00',local:'Kansas City',fase:'Rodada de 32',grupo:''},
+  // ═══════════════ RODADA DE 32 (MATA-MATA) ═══════════════
+  {id:25,tA:'África do Sul',fA:'🇿🇦',tB:'Canadá',fB:'🇨🇦',data:'28/06',hora:'16:00',dataHora:'2026-06-28T16:00:00-03:00',local:'Los Angeles',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  {id:26,tA:'Brasil',fA:'🇧🇷',tB:'Japão',fB:'🇯🇵',data:'29/06',hora:'14:00',dataHora:'2026-06-29T14:00:00-03:00',local:'Houston',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  {id:27,tA:'Alemanha',fA:'🇩🇪',tB:'Paraguai',fB:'🇵🇾',data:'29/06',hora:'17:30',dataHora:'2026-06-29T17:30:00-03:00',local:'Boston',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  {id:28,tA:'Holanda',fA:'🇳🇱',tB:'Marrocos',fB:'🇲🇦',data:'29/06',hora:'22:00',dataHora:'2026-06-29T22:00:00-03:00',local:'Monterrey',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  {id:29,tA:'Costa do Marfim',fA:'🇨🇮',tB:'Noruega',fB:'🇳🇴',data:'30/06',hora:'14:00',dataHora:'2026-06-30T14:00:00-03:00',local:'Dallas',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  {id:30,tA:'França',fA:'🇫🇷',tB:'Suécia',fB:'🇸🇪',data:'30/06',hora:'18:00',dataHora:'2026-06-30T18:00:00-03:00',local:'Nova York/NJ',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  {id:31,tA:'México',fA:'🇲🇽',tB:'Equador',fB:'🇪🇨',data:'30/06',hora:'22:00',dataHora:'2026-06-30T22:00:00-03:00',local:'Cidade do México',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  {id:32,tA:'Inglaterra',fA:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',tB:'Senegal',fB:'🇸🇳',data:'01/07',hora:'13:00',dataHora:'2026-07-01T13:00:00-03:00',local:'Atlanta',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  {id:33,tA:'Bélgica',fA:'🇧🇪',tB:'Bósnia',fB:'🇧🇦',data:'01/07',hora:'17:00',dataHora:'2026-07-01T17:00:00-03:00',local:'Seattle',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  {id:34,tA:'Estados Unidos',fA:'🇺🇸',tB:'Bósnia',fB:'🇧🇦',data:'01/07',hora:'21:00',dataHora:'2026-07-01T21:00:00-03:00',local:'San Francisco',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  {id:35,tA:'Espanha',fA:'🇪🇸',tB:'Áustria',fB:'🇦🇹',data:'02/07',hora:'16:00',dataHora:'2026-07-02T16:00:00-03:00',local:'Los Angeles',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  {id:36,tA:'Portugal',fA:'🇵🇹',tB:'Gana',fB:'🇬🇭',data:'02/07',hora:'20:00',dataHora:'2026-07-02T20:00:00-03:00',local:'Toronto',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  {id:37,tA:'Suíça',fA:'🇨🇭',tB:'Argélia',fB:'🇩🇿',data:'03/07',hora:'00:00',dataHora:'2026-07-03T00:00:00-03:00',local:'Vancouver',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  {id:38,tA:'Austrália',fA:'🇦🇺',tB:'Egito',fB:'🇪🇬',data:'03/07',hora:'15:00',dataHora:'2026-07-03T15:00:00-03:00',local:'Dallas',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  {id:39,tA:'Argentina',fA:'🇦🇷',tB:'Cabo Verde',fB:'🇨🇻',data:'03/07',hora:'19:00',dataHora:'2026-07-03T19:00:00-03:00',local:'Miami',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  {id:40,tA:'Colômbia',fA:'🇨🇴',tB:'Croácia',fB:'🇭🇷',data:'03/07',hora:'22:30',dataHora:'2026-07-03T22:30:00-03:00',local:'Kansas City',fase:'Rodada de 32',grupo:'Rodada de 32'},
+  // ═══════════════ OITAVAS ═══════════════
   {id:41,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'04/07',hora:'14:00',dataHora:'2026-07-04T14:00:00-03:00',local:'Houston',fase:'Oitavas',grupo:''},
   {id:42,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'04/07',hora:'18:00',dataHora:'2026-07-04T18:00:00-03:00',local:'Philadelphia',fase:'Oitavas',grupo:''},
   {id:43,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'05/07',hora:'17:00',dataHora:'2026-07-05T17:00:00-03:00',local:'Nova York/NJ',fase:'Oitavas',grupo:''},
@@ -374,12 +376,15 @@ const JOGOS = [
   {id:46,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'06/07',hora:'20:00',dataHora:'2026-07-06T20:00:00-03:00',local:'Seattle',fase:'Oitavas',grupo:''},
   {id:47,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'07/07',hora:'13:00',dataHora:'2026-07-07T13:00:00-03:00',local:'Atlanta',fase:'Oitavas',grupo:''},
   {id:48,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'07/07',hora:'17:00',dataHora:'2026-07-07T17:00:00-03:00',local:'Vancouver',fase:'Oitavas',grupo:''},
+  // ═══════════════ QUARTAS ═══════════════
   {id:49,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'09/07',hora:'17:00',dataHora:'2026-07-09T17:00:00-03:00',local:'Boston',fase:'Quartas',grupo:''},
   {id:50,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'10/07',hora:'16:00',dataHora:'2026-07-10T16:00:00-03:00',local:'Los Angeles',fase:'Quartas',grupo:''},
   {id:51,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'11/07',hora:'18:00',dataHora:'2026-07-11T18:00:00-03:00',local:'Miami',fase:'Quartas',grupo:''},
   {id:52,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'11/07',hora:'21:00',dataHora:'2026-07-11T21:00:00-03:00',local:'Kansas City',fase:'Quartas',grupo:''},
+  // ═══════════════ SEMIFINAIS ═══════════════
   {id:53,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'14/07',hora:'16:00',dataHora:'2026-07-14T16:00:00-03:00',local:'Dallas (AT&T)',fase:'Semifinais',grupo:''},
   {id:54,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'15/07',hora:'16:00',dataHora:'2026-07-15T16:00:00-03:00',local:'Dallas (AT&T)',fase:'Semifinais',grupo:''},
+  // ═══════════════ 3º LUGAR E FINAL ═══════════════
   {id:55,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'18/07',hora:'18:00',dataHora:'2026-07-18T18:00:00-03:00',local:'Miami',fase:'3º Lugar',grupo:''},
   {id:56,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'19/07',hora:'16:00',dataHora:'2026-07-19T16:00:00-03:00',local:'MetLife Stadium, NJ',fase:'Final',grupo:'🏆 Grande Final'},
 ];
@@ -493,7 +498,6 @@ function minutosFaltando(j){return Math.floor((new Date(j.dataHora)-new Date())/
 
 function calcPts(bet,resultado){
   if(!resultado||!bet)return null;
-  // Detecta o modo: se tem campos a/b numéricos é placar, senão é resultado
   const modo = bet.modo || (bet.a!==undefined && bet.b!==undefined ? 'placar' : 'resultado');
   if(modo==='placar'){
     const ba=parseInt(bet.a),bb=parseInt(bet.b);
@@ -502,7 +506,6 @@ function calcPts(bet,resultado){
     if(vencedor(ba,bb)===vencedor(resultado.a,resultado.b))return{pts:10,tipo:'parcial'};
     return{pts:0,tipo:'erro'};
   } else {
-    // modo resultado: aceita campo 'resultado' ou 'res' por segurança
     const resApostado = bet.resultado || bet.res;
     if(!resApostado) return null;
     const resReal = vencedor(resultado.a, resultado.b);
@@ -511,7 +514,6 @@ function calcPts(bet,resultado){
   }
 }
 
-// ── DEDUPLICAÇÃO POR CELULAR ─────────────────────────────────────────────────
 function deduplicarParticipantes(lista){
   const mapa={};
   lista.forEach(p=>{
@@ -546,13 +548,10 @@ async function limparDuplicatasFirebase(partsRaw,partsDedupadas){
       }
       await fbDelete('/participantes/'+p.id);
       await fbDelete('/palpites/'+p.id);
-      console.log('Duplicata removida:',p.nome,'id:',p.id);
     }
-    if(idsRemover.length>0) console.log('Limpeza concluída: '+idsRemover.length+' duplicata(s) removida(s)');
   }catch(e){console.warn('limparDuplicatasFirebase:',e);}
 }
 
-// ── RANKING: sempre busca dados frescos do Firebase ───────────────────────────
 async function getRankingFresco(){
   const [partsRaw, todosBets, resultsFB, bonus] = await Promise.all([
     fbGet('/participantes'),
@@ -595,7 +594,6 @@ async function getRankingFresco(){
   return rk.sort((a,b)=>b.total-a.total||b.acertos-a.acertos);
 }
 
-// ── LOGIN ─────────────────────────────────────────────────────────────────────
 function showStep(id){
   document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -647,7 +645,6 @@ async function migrarPalpitesAntigos(celKey,fbKey){
     if(meSalvo&&meSalvo.id!==fbKey&&todosBets[meSalvo.id]){
       await fbSet('/palpites/'+fbKey,todosBets[meSalvo.id]);
       await fbDelete('/palpites/'+meSalvo.id);
-      console.log('Palpites migrados de',meSalvo.id,'para',fbKey);
     }
   }catch(e){console.warn('migrarPalpitesAntigos:',e);}
 }
@@ -716,7 +713,6 @@ function navUserClick(){
   }
 }
 
-// ── TABS ─────────────────────────────────────────────────────────────────────
 function showTab(tab){
   const ts=['jogos','ranking','palpites','admin'];
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',ts[i]===tab));
@@ -728,7 +724,6 @@ function showTab(tab){
   if(tab==='admin')renderAdmin();
 }
 
-// ── JOGOS ─────────────────────────────────────────────────────────────────────
 const FILTROS=[
   {id:'todos',label:'Todos'},{id:'3ª Rodada',label:'3ª Rodada'},
   {id:'Rodada de 32',label:'R. 32'},{id:'Oitavas',label:'Oitavas'},
@@ -893,9 +888,7 @@ function shareWA(){
   window.open('https://wa.me/?text='+encodeURIComponent('🏆 Participe do Bolão Copa 2026!\n'+window.location.href.split('?')[0]));
 }
 
-// ── RANKING: busca dados frescos sempre que a aba é aberta ────────────────────
 async function renderRanking(){
-  // Mostra estado de carregamento
   document.getElementById('rank-sub').textContent='⏳ Buscando participantes...';
   document.getElementById('podium').innerHTML='<div class="rank-loading">⏳ Carregando...</div>';
   document.getElementById('rank-list').innerHTML='';
@@ -930,7 +923,6 @@ async function renderRanking(){
   });
 }
 
-// ── PALPITES ──────────────────────────────────────────────────────────────────
 function renderPalpites(){
   const container=document.getElementById('palpites-container');
   if(!ME){container.innerHTML='<div class="empty">Faça login para ver seus palpites.</div>';return;}
@@ -956,7 +948,6 @@ function renderPalpites(){
   container.innerHTML=cards.length?cards.join(''):'<div class="empty">Você ainda não fez palpites 🎯</div>';
 }
 
-// ── ADMIN ─────────────────────────────────────────────────────────────────────
 function checkAdminPass(){
   if(document.getElementById('admin-pass-inp').value==='admin2026'){
     adminLoggedIn=true;
@@ -1023,9 +1014,8 @@ function renderJogosAdmin(){
   }
   jogosFiltro.forEach(j=>{
     const div=document.createElement('div');div.className='jogo-admin';
-    const ehHoje=j.data===dh+'/06'||j.data===dh+'/07';
     const temRes=!!j.resultado;
-    const badge=temRes?'<span class="ja-badge-enc">✅ Encerrado</span>':(ehHoje?'<span class="ja-badge-hoje">🔴 HOJE</span>':'');
+    const badge=temRes?'<span class="ja-badge-enc">✅ Encerrado</span>':'';
     let corpo='';
     if(temRes){
       corpo=`<div class="ja-salvo">✅ Resultado: ${j.fA} <strong>${j.resultado.a} × ${j.resultado.b}</strong> ${j.fB}
@@ -1121,118 +1111,51 @@ async function limparDuplicatasManual(){
   renderAdminPanel();
 }
 
-// ── MIGRAÇÃO DE PALPITES COM IDs ALEATÓRIOS ──────────────────────────────────
-// Busca todos os palpites com IDs antigos (não cel_), cruza com participantes
-// pelo celular e migra tudo para a chave cel_ correta no Firebase.
 async function migrarTodosPalpitesAntigos(){
-  if(!confirm('Isso vai migrar todos os palpites com IDs antigos para as chaves cel_ corretas.\nOs palpites originais NÃO serão apagados até você confirmar.\n\nContinuar?')) return;
-
+  if(!confirm('Isso vai migrar todos os palpites com IDs antigos para as chaves cel_ corretas.\nContinuar?')) return;
   toast('⏳ Buscando dados...', 5000);
-
   const [partsRaw, todosBalcao] = await Promise.all([
     fbGet('/participantes'),
     fbGet('/palpites')
   ]);
-
-  if(!partsRaw || !todosBalcao){
-    toast('❌ Erro ao buscar dados do Firebase.');
-    return;
-  }
-
+  if(!partsRaw || !todosBalcao){toast('❌ Erro ao buscar dados do Firebase.');return;}
   const parts = Object.values(partsRaw);
   const palpitesIds = Object.keys(todosBalcao);
-
-  // Separa IDs antigos (não começam com cel_)
   const idsAntigos = palpitesIds.filter(id => !id.startsWith('cel_'));
-
-  if(idsAntigos.length === 0){
-    toast('✅ Nenhum palpite antigo encontrado! Tudo já está migrado.');
-    return;
-  }
-
-  // Monta mapa de celular → participante (chave cel_)
-  const mapaCel = {};
-  parts.forEach(p => {
-    if(p.id && p.id.startsWith('cel_') && p.cel){
-      const celNum = p.cel.replace(/\D/g,'');
-      mapaCel[celNum] = p.id;
-    }
-  });
-
-  let migrados = 0;
-  let semDono = 0;
-  const log = [];
-
+  if(idsAntigos.length === 0){toast('✅ Nenhum palpite antigo encontrado!');return;}
+  let migrados = 0, semDono = 0;
   for(const idAntigo of idsAntigos){
-    // Tenta achar o participante pelo celular nos participantes
-    // Primeiro verifica se existe participante com este id antigo
     const partAntigo = parts.find(p => p.id === idAntigo);
-
     let novaCelKey = null;
-
     if(partAntigo && partAntigo.cel){
-      // Participante ainda existe com ID antigo — cria a chave cel_ nova
       const celNum = partAntigo.cel.replace(/\D/g,'');
       novaCelKey = 'cel_' + celNum;
-
-      // Cria o participante com a chave nova se não existir
       const partExistente = await fbGet('/participantes/' + novaCelKey);
       if(!partExistente){
-        await fbSet('/participantes/' + novaCelKey, {
-          id: novaCelKey,
-          nome: partAntigo.nome,
-          apelido: partAntigo.apelido,
-          cel: partAntigo.cel
-        });
+        await fbSet('/participantes/' + novaCelKey, {id:novaCelKey,nome:partAntigo.nome,apelido:partAntigo.apelido,cel:partAntigo.cel});
       }
-    } else {
-      // Participante não encontrado com este ID — pula
-      semDono++;
-      log.push('⚠️ Sem dono: ' + idAntigo);
-      continue;
-    }
-
-    if(!novaCelKey) { semDono++; continue; }
-
-    // Mescla palpites: antigos + novos (novos têm prioridade)
+    } else {semDono++;continue;}
+    if(!novaCelKey){semDono++;continue;}
     const palpitesAntigos = todosBalcao[idAntigo] || {};
     const palpitesNovos = await fbGet('/palpites/' + novaCelKey) || {};
-    const palpitesMerge = { ...palpitesAntigos, ...palpitesNovos };
-
-    await fbSet('/palpites/' + novaCelKey, palpitesMerge);
-
+    await fbSet('/palpites/' + novaCelKey, { ...palpitesAntigos, ...palpitesNovos });
     migrados++;
-    log.push('✅ ' + (partAntigo?.nome || idAntigo) + ' → ' + novaCelKey);
   }
-
-  console.log('Migração concluída:', log);
-
   if(migrados > 0){
-    const confirmDelete = confirm(
-      `✅ ${migrados} apostador(es) migrado(s) com sucesso!\n` +
-      (semDono > 0 ? `⚠️ ${semDono} sem participante encontrado.\n` : '') +
-      `\nDeseja remover os registros antigos do Firebase agora?`
-    );
+    const confirmDelete = confirm(`✅ ${migrados} apostador(es) migrado(s)!\n${semDono>0?'⚠️ '+semDono+' sem participante.\n':''}\nRemover registros antigos agora?`);
     if(confirmDelete){
       for(const idAntigo of idsAntigos){
         const partAntigo = parts.find(p => p.id === idAntigo);
-        if(partAntigo){
-          await fbDelete('/participantes/' + idAntigo);
-          await fbDelete('/palpites/' + idAntigo);
-        }
+        if(partAntigo){await fbDelete('/participantes/'+idAntigo);await fbDelete('/palpites/'+idAntigo);}
       }
       toast('🗑️ Registros antigos removidos!');
     }
-  } else {
-    toast('⚠️ Nenhum palpite migrado. Verifique o console.');
-  }
-
+  } else {toast('⚠️ Nenhum palpite migrado.');}
   await carregarDadosFirebase();
   renderAdminPanel();
-  toast('✅ Migração concluída! Verifique o ranking agora.');
+  toast('✅ Migração concluída!');
 }
 
-// ── PONTOS MANUAIS (BÔNUS) ───────────────────────────────────────────────────
 async function renderBonusList(){
   const bonusEl = document.getElementById('bonus-list');
   if(!bonusEl) return;
@@ -1242,13 +1165,10 @@ async function renderBonusList(){
     const pts = bonus[p.id] || 0;
     const div = document.createElement('div');
     div.className = 'pt-row';
-    div.style.borderBottom = '1px solid var(--borda)';
-    div.style.paddingBottom = '10px';
-    div.style.marginBottom = '10px';
+    div.style.cssText = 'border-bottom:1px solid var(--borda);padding-bottom:10px;margin-bottom:10px;';
     div.innerHTML = `
       <div class="pt-lbl" style="font-weight:700;">${p.apelido||p.nome}</div>
-      <input type="number" value="${pts}" min="0" id="bonus-${p.id}" 
-        style="width:70px;border:1.5px solid #D0DDD4;border-radius:8px;padding:6px 8px;font-size:16px;font-weight:800;text-align:center;color:var(--verde);outline:none;background:var(--branco);">
+      <input type="number" value="${pts}" min="0" id="bonus-${p.id}" style="width:70px;border:1.5px solid #D0DDD4;border-radius:8px;padding:6px 8px;font-size:16px;font-weight:800;text-align:center;color:var(--verde);outline:none;background:var(--branco);">
       <span style="font-size:12px;color:var(--texto-muted);">pts</span>
       <button onclick="salvarBonus('${p.id}')" style="background:var(--verde-medio);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-left:4px;">💾</button>`;
     bonusEl.appendChild(div);
@@ -1273,7 +1193,6 @@ async function clearAll(){
   location.reload();
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
 window.addEventListener('load',()=>{
   if(ME){
     document.getElementById('login-screen').classList.remove('active');
