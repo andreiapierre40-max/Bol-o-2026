@@ -304,6 +304,7 @@ button,input{font-family:inherit;}
       <div id="admin-parts"></div>
     </div>
     <div class="admin-sec">
+      <button class="btn-full" style="background:#00796B;" onclick="converterArraysParaObjeto()">🔧 Converter palpites antigos (arrays → objeto)</button>
       <button class="btn-full" style="background:#6A1B9A;" onclick="migrarTodosPalpitesAntigos()">🔁 Migrar palpites antigos (IDs aleatórios)</button>
       <button class="btn-full btn-dourado" onclick="exportData()">📊 Exportar dados (JSON)</button>
       <button class="btn-full" style="background:#1565C0;" onclick="limparDuplicatasManual()">🧹 Limpar duplicatas do ranking</button>
@@ -1202,6 +1203,89 @@ async function salvarBonus(partId){
   const pts = parseInt(inp.value) || 0;
   await fbSet('/bonus/'+partId, pts);
   toast('✅ Bônus salvo!');
+}
+
+async function converterArraysParaObjeto(){
+  toast('⏳ Verificando palpites...', 4000);
+
+  const todosBets = await fbGet('/palpites');
+  if(!todosBets){ toast('❌ Erro ao buscar palpites.'); return; }
+
+  const ids = Object.keys(todosBets);
+  let convertidos = 0;
+  let jaOk = 0;
+  let erros = 0;
+  const relatorio = [];
+
+  for(const uid of ids){
+    const dados = todosBets[uid];
+
+    // Ignora chave corrompida "cel" sem underscore+numero
+    if(uid === 'cel' || typeof dados !== 'object' || dados === null){
+      await fbDelete('/palpites/'+uid);
+      relatorio.push('🗑️ Removido corrompido: '+uid);
+      continue;
+    }
+
+    // Verifica se é array (Firebase retorna arrays como objetos com chaves "0","1","2"...)
+    const chaves = Object.keys(dados);
+    const eArray = chaves.every(k => !isNaN(parseInt(k))) && chaves.includes('0');
+
+    if(!eArray){
+      // Já está no formato objeto correto
+      jaOk++;
+      continue;
+    }
+
+    // Converte array → objeto, pulando nulls e índice 0
+    const novoObj = {};
+    chaves.forEach(k => {
+      const idx = parseInt(k);
+      if(idx === 0 || dados[k] === null) return;
+      const bet = dados[k];
+      // Garante campo modo
+      if(bet && !bet.modo){
+        if(bet.resultado) bet.modo = 'resultado';
+        else if(bet.a !== undefined) bet.modo = 'placar';
+      }
+      novoObj[String(idx)] = bet;
+    });
+
+    if(Object.keys(novoObj).length === 0){
+      relatorio.push('⚠️ Sem palpites válidos: '+uid);
+      continue;
+    }
+
+    try{
+      await fbSet('/palpites/'+uid, novoObj);
+      convertidos++;
+      // Tenta identificar o participante
+      const part = PARTS.find(p=>p.id===uid);
+      relatorio.push('✅ Convertido: '+(part?part.apelido:uid)+' ('+Object.keys(novoObj).length+' palpites)');
+    }catch(e){
+      erros++;
+      relatorio.push('❌ Erro ao salvar: '+uid);
+    }
+  }
+
+  console.log('=== RELATÓRIO CONVERSÃO ===');
+  relatorio.forEach(r=>console.log(r));
+
+  if(convertidos === 0 && jaOk > 0){
+    toast('✅ Todos os palpites já estão no formato correto!');
+  } else if(convertidos > 0){
+    const msg = `✅ ${convertidos} participante(s) convertido(s)!
+${jaOk} já estavam corretos.
+${erros>0?erros+' erro(s).':''}
+
+Veja detalhes no console (F12).`;
+    alert(msg);
+    await carregarDadosFirebase();
+    renderAdminPanel();
+    toast('✅ Conversão concluída! Palpites agora visíveis.');
+  } else {
+    toast('⚠️ Nenhuma conversão necessária.');
+  }
 }
 
 async function clearAll(){
