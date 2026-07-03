@@ -233,8 +233,9 @@
 
     const idBox = state.step===0 ? `
       <div class="av-id-box">
-        <div class="av-comment-label">Nome (opcional) — deixe em branco para responder de forma anônima</div>
-        <input type="text" class="av-comment" id="av-id-input" style="min-height:auto;padding:10px 13px;" placeholder="Nome (opcional)" value="${escapeHtml(state.identificacao)}" />
+        <div class="av-comment-label">Nome completo (obrigatório) — usado apenas para evitar respostas duplicadas</div>
+        <input type="text" class="av-comment" id="av-id-input" style="min-height:auto;padding:10px 13px;" placeholder="Digite seu nome completo" value="${escapeHtml(state.identificacao)}" />
+        <div class="av-error" id="av-id-error" style="display:none;color:var(--warn);font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;margin-top:6px;">Preencha seu nome para continuar.</div>
       </div>` : '';
 
     const intro = state.step===0 ? `
@@ -256,7 +257,7 @@
     shell.innerHTML = `
       <div class="av-eyebrow">EE Maya Alice Ekman</div>
       <div class="av-title">Avaliação Institucional</div>
-      <div class="av-sub">2º semestre de 2026 · resposta anônima ou identificada, como preferir</div>
+      <div class="av-sub">2º semestre de 2026 · identificação obrigatória, uso restrito à equipe gestora</div>
       ${renderProgress()}
       <div class="av-card">
         ${idBox}
@@ -282,7 +283,28 @@
       if (state.step>0){ state.step--; render(); window.scrollTo(0,0); }
     });
     document.getElementById('av-next').addEventListener('click', async ()=>{
+      if (state.step===0 && !state.identificacao.trim()){
+        const err = document.getElementById('av-id-error');
+        if (err) err.style.display='block';
+        document.getElementById('av-id-input').focus();
+        return;
+      }
       if (isLast){
+        const btn = document.getElementById('av-next');
+        btn.disabled = true;
+        btn.textContent = 'Enviando...';
+        const dup = await checkDuplicate(state.identificacao);
+        if (dup){
+          shell.innerHTML = `
+            <div class="av-eyebrow">EE Maya Alice Ekman</div>
+            <div class="av-title">Avaliação Institucional</div>
+            <div class="av-card av-done">
+              <div class="av-done-mark" style="background:var(--warn);">!</div>
+              <h2>Este nome já respondeu a avaliação</h2>
+              <p>Encontramos uma resposta anterior com o nome "${escapeHtml(state.identificacao.trim())}". Cada pessoa pode responder apenas uma vez. Se você acredita que isso é um engano, procure a equipe gestora.</p>
+            </div>`;
+          return;
+        }
         await submitResponse();
       } else {
         state.step++;
@@ -291,6 +313,22 @@
       }
     });
     document.getElementById('av-admin-link').addEventListener('click', openAdminModal);
+  }
+
+  function normName(s){
+    return (s||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ');
+  }
+
+  async function checkDuplicate(nome){
+    const alvo = normName(nome);
+    if (!alvo) return false;
+    try{
+      const existentes = await loadAllResponses();
+      return existentes.some(r => normName(r.identificacao) === alvo);
+    }catch(e){
+      console.error('Falha ao checar duplicidade', e);
+      return false; // em caso de falha de rede, não bloqueia o envio
+    }
   }
 
   function renderDone(){
@@ -323,6 +361,8 @@
     }catch(e){
       console.error('Falha ao salvar resposta', e);
       alert('Não foi possível enviar sua resposta agora. Verifique sua conexão e tente novamente.');
+      const btn = document.getElementById('av-next');
+      if (btn){ btn.disabled = false; btn.textContent = 'Enviar avaliação'; }
       return;
     }
     state.submitted = true;
