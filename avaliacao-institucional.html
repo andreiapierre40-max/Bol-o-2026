@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avaliação Institucional 2026 — EE Maya Alice Ekman</title>
+<style>
+  :root{
+    --navy:#1F3864;
+    --navy-deep:#132444;
+    --gold:#B7862C;
+    --gold-light:#D9A94F;
+    --paper:#F6F4EF;
+    --paper-2:#EFEBE1;
+    --ink:#242019;
+    --ink-soft:#5B564C;
+    --line:#DCD5C4;
+    --good:#4C7A54;
+    --warn:#B4472E;
+    font-family: "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  }
+  *{box-sizing:border-box;}
+  #av-root{
+    background:var(--paper);
+    color:var(--ink);
+    min-height:100%;
+    padding:0;
+    line-height:1.5;
+  }
+  .av-shell{max-width:720px;margin:0 auto;padding:28px 20px 80px;}
+  .av-eyebrow{
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--gold);font-weight:700;text-align:center;margin-bottom:6px;
+  }
+  .av-title{
+    font-size:26px;font-weight:700;color:var(--navy-deep);text-align:center;
+    margin:0 0 4px;letter-spacing:.01em;
+  }
+  .av-sub{
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    text-align:center;color:var(--ink-soft);font-size:13.5px;margin-bottom:26px;
+  }
+  .av-progress-wrap{margin-bottom:30px;}
+  .av-progress-track{height:4px;background:var(--paper-2);border-radius:2px;overflow:hidden;}
+  .av-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--navy));transition:width .35s ease;}
+  .av-progress-label{
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:11.5px;color:var(--ink-soft);
+    display:flex;justify-content:space-between;margin-top:6px;letter-spacing:.03em;
+  }
+  .av-card{
+    background:#fff;border:1px solid var(--line);border-radius:3px;
+    padding:30px 28px;box-shadow:0 1px 3px rgba(31,56,100,.06);
+    animation:av-fade .3s ease;
+  }
+  @keyframes av-fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  .av-block-title{
+    font-size:19px;font-weight:700;color:var(--navy-deep);margin:0 0 3px;
+    display:flex;align-items:baseline;gap:10px;
+  }
+  .av-block-num{color:var(--gold);font-size:14px;font-weight:700;font-family:"Helvetica Neue",Arial,sans-serif;}
+  .av-block-hint{
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:12.5px;color:var(--ink-soft);
+    margin-bottom:22px;border-bottom:1px solid var(--line);padding-bottom:16px;
+  }
+  .av-item{margin-bottom:24px;}
+  .av-item:last-child{margin-bottom:4px;}
+  .av-item-text{font-size:15px;color:var(--ink);margin-bottom:10px;}
+  .av-scale{display:flex;gap:7px;flex-wrap:wrap;}
+  .av-scale-btn{
+    flex:1;min-width:56px;
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);
+    border-radius:3px;padding:10px 4px 8px;cursor:pointer;text-align:center;
+    transition:all .15s ease;
+  }
+  .av-scale-btn .n{display:block;font-size:17px;font-weight:700;color:var(--navy);}
+  .av-scale-btn .l{display:block;font-size:9.5px;letter-spacing:.02em;margin-top:2px;line-height:1.15;}
+  .av-scale-btn:hover{border-color:var(--gold-light);}
+  .av-scale-btn.sel{background:var(--navy);border-color:var(--navy);color:#fff;}
+  .av-scale-btn.sel .n{color:#fff;}
+  .av-comment{
+    width:100%;font-family:"Helvetica Neue",Arial,sans-serif;font-size:13.5px;
+    border:1.5px solid var(--line);border-radius:3px;padding:10px 12px;
+    resize:vertical;min-height:56px;color:var(--ink);background:var(--paper);
+  }
+  .av-comment:focus, .av-scale-btn:focus{outline:2px solid var(--gold-light);outline-offset:1px;}
+  .av-comment-label{
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:11.5px;color:var(--ink-soft);
+    margin:22px 0 6px;font-style:italic;
+  }
+  .av-nps-row{display:flex;gap:5px;flex-wrap:wrap;}
+  .av-nps-btn{
+    width:40px;height:40px;border-radius:3px;border:1.5px solid var(--line);background:#fff;
+    font-family:"Helvetica Neue",Arial,sans-serif;font-weight:700;color:var(--navy);cursor:pointer;
+  }
+  .av-nps-btn.sel{background:var(--gold);border-color:var(--gold);color:#fff;}
+  .av-nps-scale-lbl{display:flex;justify-content:space-between;font-family:"Helvetica Neue",Arial,sans-serif;font-size:10.5px;color:var(--ink-soft);margin-top:6px;}
+  .av-nav{display:flex;justify-content:space-between;align-items:center;margin-top:22px;}
+  .av-btn{
+    font-family:"Helvetica Neue",Arial,sans-serif;font-weight:600;font-size:13.5px;
+    padding:11px 22px;border-radius:3px;border:none;cursor:pointer;letter-spacing:.01em;
+  }
+  .av-btn-primary{background:var(--navy);color:#fff;}
+  .av-btn-primary:hover{background:var(--navy-deep);}
+  .av-btn-ghost{background:transparent;color:var(--ink-soft);border:1.5px solid var(--line);}
+  .av-btn-ghost:hover{border-color:var(--ink-soft);}
+  .av-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .av-error{
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:12.5px;color:var(--warn);
+    margin-top:14px;display:none;
+  }
+  .av-done{text-align:center;padding:50px 20px;}
+  .av-done-mark{
+    width:56px;height:56px;border-radius:50%;background:var(--good);color:#fff;
+    display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:26px;
+  }
+  .av-done h2{color:var(--navy-deep);font-size:21px;margin-bottom:8px;}
+  .av-done p{font-family:"Helvetica Neue",Arial,sans-serif;color:var(--ink-soft);font-size:13.5px;}
+  .av-footer-link{
+    text-align:center;margin-top:26px;font-family:"Helvetica Neue",Arial,sans-serif;
+    font-size:11px;color:var(--ink-soft);opacity:.55;
+  }
+  .av-footer-link button{
+    background:none;border:none;color:inherit;text-decoration:underline;cursor:pointer;font-size:11px;font-family:inherit;
+  }
+  /* Admin / results */
+  .av-modal-bg{
+    position:fixed;inset:0;background:rgba(19,36,68,.55);display:flex;
+    align-items:center;justify-content:center;z-index:50;padding:20px;
+  }
+  .av-modal{background:#fff;border-radius:4px;padding:26px;max-width:340px;width:100%;}
+  .av-modal h3{font-size:16px;color:var(--navy-deep);margin:0 0 12px;}
+  .av-modal input{
+    width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:3px;
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:14px;margin-bottom:12px;
+  }
+  .av-modal-row{display:flex;gap:8px;justify-content:flex-end;}
+  .av-results-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:22px;flex-wrap:wrap;gap:10px;}
+  .av-count-pill{
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:12px;color:var(--navy);
+    background:var(--paper-2);padding:4px 12px;border-radius:20px;font-weight:600;
+  }
+  .av-res-block{margin-bottom:26px;padding-bottom:22px;border-bottom:1px solid var(--line);}
+  .av-res-block:last-of-type{border-bottom:none;}
+  .av-res-block-title{font-size:16px;font-weight:700;color:var(--navy-deep);margin-bottom:2px;}
+  .av-res-block-avg{font-family:"Helvetica Neue",Arial,sans-serif;font-size:12px;color:var(--gold);font-weight:700;margin-bottom:14px;}
+  .av-res-item{margin-bottom:12px;}
+  .av-res-item-text{font-family:"Helvetica Neue",Arial,sans-serif;font-size:12.5px;color:var(--ink);margin-bottom:5px;}
+  .av-bar-row{display:flex;align-items:center;gap:10px;}
+  .av-bar-track{flex:1;height:9px;background:var(--paper-2);border-radius:5px;overflow:hidden;}
+  .av-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--navy));border-radius:5px;}
+  .av-bar-val{font-family:"Helvetica Neue",Arial,sans-serif;font-size:12px;font-weight:700;color:var(--navy);width:34px;text-align:right;}
+  .av-comments-list{font-family:"Helvetica Neue",Arial,sans-serif;font-size:12.5px;}
+  .av-comment-card{background:var(--paper);border-left:3px solid var(--gold);padding:8px 12px;margin-bottom:8px;border-radius:0 3px 3px 0;color:var(--ink);}
+  .av-nps-summary{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:10px;}
+  .av-nps-stat{font-family:"Helvetica Neue",Arial,sans-serif;}
+  .av-nps-stat .v{font-size:24px;font-weight:700;color:var(--navy-deep);}
+  .av-nps-stat .k{font-size:10.5px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
+  .av-empty{font-family:"Helvetica Neue",Arial,sans-serif;color:var(--ink-soft);font-size:13px;text-align:center;padding:30px 0;}
+  .av-export-btn{margin-top:6px;}
+</style>
+
+</head>
+<body>
+<div id="av-root">
+  <div class="av-shell" id="av-shell"></div>
+</div>
+
+<script>
+(function(){
+  const BLOCKS = [
+    { id:'direcao', title:'Direção (Diretora)', hint:'Avalie o trabalho da Diretora da escola neste semestre.',
+      items:[
+        {id:'d1', text:'Comunica com clareza as decisões e informações da escola'},
+        {id:'d2', text:'É acessível e aberta ao diálogo com os professores'},
+        {id:'d3', text:'Exerce liderança na condução do trabalho pedagógico da unidade'},
+        {id:'d4', text:'Realiza uma gestão administrativa organizada (recursos, prazos, documentos)'},
+        {id:'d5', text:'Media e resolve conflitos de forma justa e equilibrada'},
+        {id:'d6', text:'Reconhece e valoriza o trabalho da equipe'},
+      ]},
+    { id:'vice', title:'Vice-Direção', hint:'Avalie o trabalho da Vice-Direção neste semestre.',
+      items:[
+        {id:'v1', text:'Dá suporte efetivo à organização escolar e à disciplina'},
+        {id:'v2', text:'Atende bem alunos, pais/responsáveis e comunidade escolar'},
+        {id:'v3', text:'Apoia as demandas do dia a dia da escola com agilidade'},
+        {id:'v4', text:'Mantém comunicação clara e constante com os professores'},
+      ]},
+    { id:'coord', title:'Coordenação Pedagógica', hint:'Avalie o trabalho da Coordenação Pedagógica neste semestre.',
+      items:[
+        {id:'c1', text:'Acompanha e apoia o trabalho pedagógico em sala de aula'},
+        {id:'c2', text:'Oferece ATPC/ATPCA e formações com qualidade e utilidade prática'},
+        {id:'c3', text:'Dá retorno (feedback) pedagógico construtivo aos professores'},
+        {id:'c4', text:'Apoia na resolução de dificuldades pedagógicas e de aprendizagem'},
+      ]},
+    { id:'goe', title:'Gerente de Organização Escolar (GOE)', hint:'Avalie o trabalho da GOE neste semestre.',
+      items:[
+        {id:'g1', text:'Mantém a organização e o controle de documentos e frequência em dia'},
+        {id:'g2', text:'Dá suporte operacional adequado ao trabalho docente'},
+        {id:'g3', text:'Atende com agilidade às demandas administrativas'},
+      ]},
+    { id:'func', title:'Funcionários', hint:'Secretaria, inspetoria de alunos, apoio e merenda.',
+      items:[
+        {id:'f1', text:'Atende com cordialidade e presteza'},
+        {id:'f2', text:'Colabora com o trabalho pedagógico da escola'},
+        {id:'f3', text:'Cumpre suas funções com pontualidade e responsabilidade'},
+      ]},
+    { id:'geral', title:'Avaliação Geral da Escola', hint:'Uma visão geral sobre o semestre.',
+      items:[
+        {id:'e1', text:'O ambiente de trabalho na escola é positivo e colaborativo'},
+        {id:'e2', text:'A infraestrutura da escola atende às necessidades do trabalho pedagógico'},
+        {id:'e3', text:'De modo geral, estou satisfeito(a) com a gestão da escola neste semestre'},
+      ]},
+  ];
+  const SCALE_LABELS = ['Insatisfat.','Regular','Bom','Muito Bom','Excelente'];
+  const FINAL_STEP = BLOCKS.length; // index of open-questions step
+  const TOTAL_STEPS = BLOCKS.length + 1;
+  const ADMIN_CODE = 'gestao2026';
+  // Mesmo banco Firebase do bolão, coleção separada (/avaliacao2026)
+  const FB_URL = 'https://bolao-hexa-2026-default-rtdb.firebaseio.com';
+
+  let state = {
+    step: 0,
+    answers: {},      // itemId -> 1..5
+    comments: {},      // blockId -> text
+    fragil: '', positivo: '', nota: null,
+    submitted: false,
+    view: 'form',       // form | results
+  };
+
+  const shell = document.getElementById('av-shell');
+
+  function allAnsweredInBlock(block){
+    return block.items.every(it => state.answers[it.id]);
+  }
+
+  function render(){
+    if (state.view === 'results') return renderResults();
+    if (state.submitted) return renderDone();
+    return renderForm();
+  }
+
+  function renderProgress(){
+    const pct = Math.round(((state.step) / TOTAL_STEPS) * 100 + (100/TOTAL_STEPS)*0.15);
+    const label = state.step < BLOCKS.length ? BLOCKS[state.step].title : 'Considerações finais';
+    return `
+      <div class="av-progress-wrap">
+        <div class="av-progress-track"><div class="av-progress-fill" style="width:${pct}%"></div></div>
+        <div class="av-progress-label"><span>Etapa ${state.step+1} de ${TOTAL_STEPS}</span><span>${label}</span></div>
+      </div>`;
+  }
+
+  function renderForm(){
+    const isFinal = state.step === FINAL_STEP;
+    let inner = '';
+    if (!isFinal){
+      const block = BLOCKS[state.step];
+      inner = `
+        <div class="av-block-title"><span class="av-block-num">0${state.step+1}</span> ${block.title}</div>
+        <div class="av-block-hint">${block.hint}</div>
+        ${block.items.map(it => `
+          <div class="av-item">
+            <div class="av-item-text">${it.text}</div>
+            <div class="av-scale">
+              ${[1,2,3,4,5].map(n => `
+                <button type="button" class="av-scale-btn ${state.answers[it.id]===n?'sel':''}" data-item="${it.id}" data-val="${n}">
+                  <span class="n">${n}</span><span class="l">${SCALE_LABELS[n-1]}</span>
+                </button>`).join('')}
+            </div>
+          </div>`).join('')}
+        <div class="av-comment-label">Comentário sobre este setor (opcional)</div>
+        <textarea class="av-comment" data-comment="${block.id}" placeholder="Se quiser, deixe uma observação...">${state.comments[block.id]||''}</textarea>
+      `;
+    } else {
+      inner = `
+        <div class="av-block-title"><span class="av-block-num">0${TOTAL_STEPS}</span> Considerações Finais</div>
+        <div class="av-block-hint">Suas respostas aqui são anônimas e muito valiosas para o planejamento do próximo semestre.</div>
+        <div class="av-item">
+          <div class="av-item-text">Na sua percepção, quais são os pontos mais frágeis da escola neste semestre — o que mais precisa de atenção?</div>
+          <textarea class="av-comment" data-final="fragil" placeholder="Escreva livremente...">${state.fragil}</textarea>
+        </div>
+        <div class="av-item">
+          <div class="av-item-text">Quais foram os principais pontos positivos ou avanços da escola neste semestre?</div>
+          <textarea class="av-comment" data-final="positivo" placeholder="Escreva livremente...">${state.positivo}</textarea>
+        </div>
+        <div class="av-item">
+          <div class="av-item-text">Em uma escala de 0 a 10, qual nota você daria para a escola neste semestre?</div>
+          <div class="av-nps-row">
+            ${Array.from({length:11},(_,n)=>`<button type="button" class="av-nps-btn ${state.nota===n?'sel':''}" data-nota="${n}">${n}</button>`).join('')}
+          </div>
+          <div class="av-nps-scale-lbl"><span>0 = nota muito baixa</span><span>10 = nota máxima</span></div>
+        </div>
+      `;
+    }
+
+    const canAdvance = isFinal ? (state.nota !== null) : allAnsweredInBlock(BLOCKS[state.step]);
+
+    shell.innerHTML = `
+      <div class="av-eyebrow">EE Maya Alice Ekman</div>
+      <div class="av-title">Avaliação Institucional</div>
+      <div class="av-sub">Encerramento do 2º semestre de 2026 · resposta anônima</div>
+      ${renderProgress()}
+      <div class="av-card">
+        ${inner}
+        <div class="av-error" id="av-error">Responda todos os itens antes de continuar.</div>
+        <div class="av-nav">
+          <button class="av-btn av-btn-ghost" id="av-back" ${state.step===0?'disabled':''}>Voltar</button>
+          <button class="av-btn av-btn-primary" id="av-next">${isFinal ? 'Enviar avaliação' : 'Continuar'}</button>
+        </div>
+      </div>
+      <div class="av-footer-link"><button id="av-admin-link">Sou da equipe gestora — ver resultados</button></div>
+    `;
+
+    shell.querySelectorAll('.av-scale-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        state.answers[btn.dataset.item] = Number(btn.dataset.val);
+        render();
+      });
+    });
+    shell.querySelectorAll('.av-nps-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        state.nota = Number(btn.dataset.nota);
+        render();
+      });
+    });
+    const cTextarea = shell.querySelector('textarea[data-comment]');
+    if (cTextarea) cTextarea.addEventListener('input', e=>{ state.comments[e.target.dataset.comment] = e.target.value; });
+    shell.querySelectorAll('textarea[data-final]').forEach(t=>{
+      t.addEventListener('input', e=>{ state[e.target.dataset.final] = e.target.value; });
+    });
+
+    document.getElementById('av-back').addEventListener('click', ()=>{
+      if (state.step>0){ state.step--; render(); window.scrollTo(0,0); }
+    });
+    document.getElementById('av-next').addEventListener('click', async ()=>{
+      if (!canAdvance){
+        document.getElementById('av-error').style.display='block';
+        return;
+      }
+      document.getElementById('av-error').style.display='none';
+      if (isFinal){
+        await submitResponse();
+      } else {
+        state.step++;
+        render();
+        window.scrollTo(0,0);
+      }
+    });
+    document.getElementById('av-admin-link').addEventListener('click', openAdminModal);
+  }
+
+  function renderDone(){
+    shell.innerHTML = `
+      <div class="av-eyebrow">EE Maya Alice Ekman</div>
+      <div class="av-title">Avaliação Institucional</div>
+      <div class="av-card av-done">
+        <div class="av-done-mark">✓</div>
+        <h2>Resposta enviada. Obrigada!</h2>
+        <p>Sua avaliação foi registrada de forma anônima e vai contribuir para o planejamento do próximo semestre.</p>
+      </div>
+      <div class="av-footer-link"><button id="av-admin-link">Sou da equipe gestora — ver resultados</button></div>
+    `;
+    document.getElementById('av-admin-link').addEventListener('click', openAdminModal);
+  }
+
+  async function submitResponse(){
+    const record = {
+      answers: state.answers,
+      comments: state.comments,
+      fragil: state.fragil,
+      positivo: state.positivo,
+      nota: state.nota,
+      ts: Date.now(),
+    };
+    try{
+      const r = await fetch(FB_URL + '/avaliacao2026/respostas.json', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(record),
+      });
+      if (!r.ok) throw new Error('fb error');
+    }catch(e){
+      console.error('Falha ao salvar resposta', e);
+      alert('Não foi possível enviar sua resposta agora. Verifique sua conexão e tente novamente.');
+      return;
+    }
+    state.submitted = true;
+    render();
+  }
+
+  function openAdminModal(){
+    const bg = document.createElement('div');
+    bg.className = 'av-modal-bg';
+    bg.innerHTML = `
+      <div class="av-modal">
+        <h3>Área da equipe gestora</h3>
+        <input type="password" id="av-code" placeholder="Código de acesso" />
+        <div class="av-modal-row">
+          <button class="av-btn av-btn-ghost" id="av-cancel">Cancelar</button>
+          <button class="av-btn av-btn-primary" id="av-enter">Entrar</button>
+        </div>
+      </div>`;
+    document.body.appendChild(bg);
+    document.getElementById('av-cancel').addEventListener('click', ()=> bg.remove());
+    document.getElementById('av-enter').addEventListener('click', ()=>{
+      const val = document.getElementById('av-code').value;
+      if (val === ADMIN_CODE){
+        bg.remove();
+        state.view = 'results';
+        render();
+      } else {
+        document.getElementById('av-code').style.borderColor = 'var(--warn)';
+      }
+    });
+  }
+
+  async function loadAllResponses(){
+    try{
+      const r = await fetch(FB_URL + '/avaliacao2026/respostas.json');
+      if (!r.ok) return [];
+      const data = await r.json();
+      if (!data) return [];
+      return Object.values(data);
+    }catch(e){
+      console.error('Falha ao carregar respostas', e);
+      return [];
+    }
+  }
+
+  function avg(nums){
+    if (!nums.length) return 0;
+    return nums.reduce((a,b)=>a+b,0)/nums.length;
+  }
+
+  async function renderResults(){
+    shell.innerHTML = `<div class="av-empty">Carregando respostas...</div>`;
+    const responses = await loadAllResponses();
+
+    let html = `
+      <div class="av-eyebrow">EE Maya Alice Ekman</div>
+      <div class="av-title">Resultados — Avaliação Institucional</div>
+      <div class="av-sub">2º semestre de 2026</div>
+      <div class="av-results-head">
+        <span class="av-count-pill">${responses.length} resposta${responses.length===1?'':'s'}</span>
+        <button class="av-btn av-btn-ghost" id="av-export">Exportar CSV</button>
+      </div>
+    `;
+
+    if (!responses.length){
+      html += `<div class="av-card"><div class="av-empty">Ainda não há respostas registradas.</div></div>`;
+    } else {
+      html += `<div class="av-card">`;
+      BLOCKS.forEach(block=>{
+        const itemAverages = block.items.map(it=>{
+          const vals = responses.map(r=>r.answers && r.answers[it.id]).filter(v=>v);
+          return {text:it.text, avg: avg(vals), n: vals.length};
+        });
+        const blockAvg = avg(itemAverages.filter(i=>i.n).map(i=>i.avg));
+        html += `
+          <div class="av-res-block">
+            <div class="av-res-block-title">${block.title}</div>
+            <div class="av-res-block-avg">Média do bloco: ${blockAvg.toFixed(1)} / 5</div>
+            ${itemAverages.map(i=>`
+              <div class="av-res-item">
+                <div class="av-res-item-text">${i.text}</div>
+                <div class="av-bar-row">
+                  <div class="av-bar-track"><div class="av-bar-fill" style="width:${(i.avg/5*100)||0}%"></div></div>
+                  <div class="av-bar-val">${i.avg?i.avg.toFixed(1):'—'}</div>
+                </div>
+              </div>`).join('')}
+            ${responses.some(r=>r.comments && r.comments[block.id])? `
+              <div class="av-comment-label">Comentários recebidos</div>
+              <div class="av-comments-list">
+                ${responses.filter(r=>r.comments && r.comments[block.id]).map(r=>`<div class="av-comment-card">${escapeHtml(r.comments[block.id])}</div>`).join('')}
+              </div>` : ''}
+          </div>`;
+      });
+
+      const notas = responses.map(r=>r.nota).filter(n=>n!==null && n!==undefined);
+      const notaAvg = avg(notas);
+      html += `
+        <div class="av-res-block">
+          <div class="av-res-block-title">Nota geral da escola (0–10)</div>
+          <div class="av-nps-summary">
+            <div class="av-nps-stat"><div class="v">${notaAvg?notaAvg.toFixed(1):'—'}</div><div class="k">Média</div></div>
+            <div class="av-nps-stat"><div class="v">${notas.length}</div><div class="k">Respostas</div></div>
+          </div>
+          <div class="av-comment-label">Pontos mais frágeis apontados</div>
+          <div class="av-comments-list">
+            ${responses.filter(r=>r.fragil && r.fragil.trim()).map(r=>`<div class="av-comment-card">${escapeHtml(r.fragil)}</div>`).join('') || '<div class="av-empty">Sem respostas.</div>'}
+          </div>
+          <div class="av-comment-label">Pontos positivos apontados</div>
+          <div class="av-comments-list">
+            ${responses.filter(r=>r.positivo && r.positivo.trim()).map(r=>`<div class="av-comment-card">${escapeHtml(r.positivo)}</div>`).join('') || '<div class="av-empty">Sem respostas.</div>'}
+          </div>
+        </div>
+      `;
+      html += `</div>`;
+    }
+
+    html += `<div class="av-footer-link"><button id="av-back-form">Voltar ao formulário</button></div>`;
+    shell.innerHTML = html;
+
+    const exportBtn = document.getElementById('av-export');
+    if (exportBtn) exportBtn.addEventListener('click', ()=> exportCsv(responses));
+    document.getElementById('av-back-form').addEventListener('click', ()=>{
+      state.view = 'form';
+      render();
+    });
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function exportCsv(responses){
+    const allItemIds = BLOCKS.flatMap(b=>b.items.map(i=>i.id));
+    const header = ['ts', ...allItemIds, 'nota', 'fragil', 'positivo'];
+    const rows = responses.map(r=>{
+      return header.map(h=>{
+        if (h==='ts') return new Date(r.ts).toLocaleString('pt-BR');
+        if (h==='nota') return r.nota ?? '';
+        if (h==='fragil' || h==='positivo') return '"'+String(r[h]||'').replace(/"/g,'""')+'"';
+        return (r.answers && r.answers[h]) || '';
+      }).join(',');
+    });
+    const csv = [header.join(','), ...rows].join('\\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'avaliacao_institucional_2sem2026.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
