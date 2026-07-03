@@ -79,6 +79,13 @@
     resize:vertical;min-height:78px;color:var(--ink);background:var(--paper);
   }
   .av-comment:focus{outline:2px solid var(--gold-light);outline-offset:1px;}
+  .av-comment.av-invalid{border-color:var(--warn);}
+  .av-charcount{
+    font-family:"Helvetica Neue",Arial,sans-serif;font-size:11px;color:var(--ink-soft);
+    text-align:right;margin-top:4px;
+  }
+  .av-charcount.ok{color:var(--good);}
+  .av-charcount.low{color:var(--warn);}
   .av-id-box{margin-bottom:22px;padding-bottom:18px;border-bottom:1px dashed var(--line);}
   .av-comment-label{
     font-family:"Helvetica Neue",Arial,sans-serif;font-size:11.5px;color:var(--ink-soft);
@@ -146,6 +153,7 @@
   // Mesmo banco Firebase do bolão, coleção separada (/avaliacao2026)
   const FB_URL = 'https://bolao-hexa-2026-default-rtdb.firebaseio.com';
   const ADMIN_CODE = 'gestao2026';
+  const MIN_CHARS = 80; // aproximadamente duas linhas de texto
 
   const BLOCKS = [
     { id:'b1', numeral:'I', title:'Infraestrutura', questions:[
@@ -211,6 +219,27 @@
 
   function qKey(blockId, idx){ return blockId + '_' + idx; }
 
+  function validateCurrentBlock(block){
+    let firstInvalid = null;
+    block.questions.forEach((q, idx) => {
+      const key = qKey(block.id, idx);
+      const len = (state.respostas[key] || '').trim().length;
+      const textarea = shell.querySelector('textarea[data-key="'+key+'"]');
+      if (len < MIN_CHARS){
+        if (textarea) textarea.classList.add('av-invalid');
+        if (!firstInvalid) firstInvalid = textarea;
+      } else {
+        if (textarea) textarea.classList.remove('av-invalid');
+      }
+    });
+    if (firstInvalid){
+      firstInvalid.scrollIntoView({behavior:'smooth', block:'center'});
+      firstInvalid.focus();
+      return false;
+    }
+    return true;
+  }
+
   function render(){
     if (state.view === 'results') return renderResults();
     if (state.submitted) return renderDone();
@@ -248,11 +277,17 @@
         </ul>
       </div>` : '';
 
-    const questionsHtml = block.questions.map((q, idx) => `
+    const questionsHtml = block.questions.map((q, idx) => {
+      const key = qKey(block.id, idx);
+      const len = (state.respostas[key] || '').trim().length;
+      const cls = len >= MIN_CHARS ? 'ok' : 'low';
+      return `
       <div class="av-item">
         <div class="av-item-text">${q}</div>
-        <textarea class="av-comment" data-key="${qKey(block.id, idx)}" placeholder="Escreva livremente...">${escapeHtml(state.respostas[qKey(block.id, idx)] || '')}</textarea>
-      </div>`).join('');
+        <textarea class="av-comment" data-key="${key}" placeholder="Escreva livremente (mínimo de duas linhas)...">${escapeHtml(state.respostas[key] || '')}</textarea>
+        <div class="av-charcount ${cls}" id="count-${key}">${len} / ${MIN_CHARS} caracteres mínimos</div>
+      </div>`;
+    }).join('');
 
     shell.innerHTML = `
       <div class="av-eyebrow">EE Maya Alice Ekman</div>
@@ -274,7 +309,18 @@
     `;
 
     shell.querySelectorAll('textarea[data-key]').forEach(t=>{
-      t.addEventListener('input', e=>{ state.respostas[e.target.dataset.key] = e.target.value; });
+      t.addEventListener('input', e=>{
+        const key = e.target.dataset.key;
+        state.respostas[key] = e.target.value;
+        const len = e.target.value.trim().length;
+        const counter = document.getElementById('count-'+key);
+        if (counter){
+          counter.textContent = len + ' / ' + MIN_CHARS + ' caracteres mínimos';
+          counter.classList.toggle('ok', len >= MIN_CHARS);
+          counter.classList.toggle('low', len < MIN_CHARS);
+        }
+        if (len >= MIN_CHARS) e.target.classList.remove('av-invalid');
+      });
     });
     const idInput = document.getElementById('av-id-input');
     if (idInput) idInput.addEventListener('input', e=>{ state.identificacao = e.target.value; });
@@ -287,6 +333,9 @@
         const err = document.getElementById('av-id-error');
         if (err) err.style.display='block';
         document.getElementById('av-id-input').focus();
+        return;
+      }
+      if (!validateCurrentBlock(block)){
         return;
       }
       if (isLast){
