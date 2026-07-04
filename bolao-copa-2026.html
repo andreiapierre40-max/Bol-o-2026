@@ -383,14 +383,14 @@ const JOGOS = [
   {id:39,tA:'Argentina',fA:'🇦🇷',tB:'Cabo Verde',fB:'🇨🇻',data:'03/07',hora:'19:00',dataHora:'2026-07-03T19:00:00-03:00',local:'Miami',fase:'Rodada de 32',grupo:'Rodada de 32'},
   {id:40,tA:'Colômbia',fA:'🇨🇴',tB:'Gana',fB:'🇬🇭',data:'03/07',hora:'22:30',dataHora:'2026-07-03T22:30:00-03:00',local:'Kansas City',fase:'Rodada de 32',grupo:'Rodada de 32'},
   // ═══════════════ OITAVAS ═══════════════
-  {id:41,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'04/07',hora:'14:00',dataHora:'2026-07-04T14:00:00-03:00',local:'Houston',fase:'Oitavas',grupo:''},
-  {id:42,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'04/07',hora:'18:00',dataHora:'2026-07-04T18:00:00-03:00',local:'Philadelphia',fase:'Oitavas',grupo:''},
-  {id:43,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'05/07',hora:'17:00',dataHora:'2026-07-05T17:00:00-03:00',local:'Nova York/NJ',fase:'Oitavas',grupo:''},
-  {id:44,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'05/07',hora:'21:00',dataHora:'2026-07-05T21:00:00-03:00',local:'Cidade do México',fase:'Oitavas',grupo:''},
-  {id:45,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'06/07',hora:'15:00',dataHora:'2026-07-06T15:00:00-03:00',local:'Dallas',fase:'Oitavas',grupo:''},
-  {id:46,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'06/07',hora:'20:00',dataHora:'2026-07-06T20:00:00-03:00',local:'Seattle',fase:'Oitavas',grupo:''},
-  {id:47,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'07/07',hora:'13:00',dataHora:'2026-07-07T13:00:00-03:00',local:'Atlanta',fase:'Oitavas',grupo:''},
-  {id:48,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'07/07',hora:'17:00',dataHora:'2026-07-07T17:00:00-03:00',local:'Vancouver',fase:'Oitavas',grupo:''},
+  {id:41,tA:'Canadá',fA:'🇨🇦',tB:'Marrocos',fB:'🇲🇦',data:'04/07',hora:'14:00',dataHora:'2026-07-04T14:00:00-03:00',local:'Houston',fase:'Oitavas',grupo:''},
+  {id:42,tA:'Paraguai',fA:'🇵🇾',tB:'França',fB:'🇫🇷',data:'04/07',hora:'18:00',dataHora:'2026-07-04T18:00:00-03:00',local:'Philadelphia',fase:'Oitavas',grupo:''},
+  {id:43,tA:'Brasil',fA:'🇧🇷',tB:'Noruega',fB:'🇳🇴',data:'05/07',hora:'17:00',dataHora:'2026-07-05T17:00:00-03:00',local:'Nova York/NJ',fase:'Oitavas',grupo:''},
+  {id:44,tA:'México',fA:'🇲🇽',tB:'Inglaterra',fB:'🏴',data:'05/07',hora:'21:00',dataHora:'2026-07-05T21:00:00-03:00',local:'Cidade do México',fase:'Oitavas',grupo:''},
+  {id:45,tA:'Portugal',fA:'🇵🇹',tB:'Espanha',fB:'🇪🇸',data:'06/07',hora:'16:00',dataHora:'2026-07-06T16:00:00-03:00',local:'Dallas',fase:'Oitavas',grupo:''},
+  {id:46,tA:'Estados Unidos',fA:'🇺🇸',tB:'Bélgica',fB:'🇧🇪',data:'06/07',hora:'21:00',dataHora:'2026-07-06T21:00:00-03:00',local:'Seattle',fase:'Oitavas',grupo:''},
+  {id:47,tA:'Argentina',fA:'🇦🇷',tB:'Egito',fB:'🇪🇬',data:'07/07',hora:'13:00',dataHora:'2026-07-07T13:00:00-03:00',local:'Atlanta',fase:'Oitavas',grupo:''},
+  {id:48,tA:'Suíça',fA:'🇨🇭',tB:'Colômbia',fB:'🇨🇴',data:'07/07',hora:'17:00',dataHora:'2026-07-07T17:00:00-03:00',local:'Vancouver',fase:'Oitavas',grupo:''},
   // ═══════════════ QUARTAS ═══════════════
   {id:49,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'09/07',hora:'17:00',dataHora:'2026-07-09T17:00:00-03:00',local:'Boston',fase:'Quartas',grupo:''},
   {id:50,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'10/07',hora:'16:00',dataHora:'2026-07-10T16:00:00-03:00',local:'Los Angeles',fase:'Quartas',grupo:''},
@@ -869,14 +869,16 @@ function buildCard(jogo,ub){
   }
 
   const outros=[];
-  Object.entries(BETS).forEach(([uid,ubets])=>{
-    if(uid===ME?.id)return;
-    const p=PARTS.find(x=>x.id===uid);if(!p||!ubets[jogo.id])return;
-    const ob=ubets[jogo.id];
-    const txt=ob.modo==='placar'?`${ob.a}×${ob.b}`:(ob.resultado==='A'?jogo.tA:ob.resultado==='B'?jogo.tB:'Empate');
-    outros.push(`<span class="bet-chip">${p.apelido||p.nome.split(' ')[0]}: ${txt}</span>`);
-  });
-  const othersHTML=outros.length?`<div class="others-bets"><div class="others-label">Palpites dos outros</div>${outros.join('')}</div>`:'';
+  if(adminLoggedIn){
+    Object.entries(BETS).forEach(([uid,ubets])=>{
+      if(uid===ME?.id)return;
+      const p=PARTS.find(x=>x.id===uid);if(!p||!ubets[jogo.id])return;
+      const ob=ubets[jogo.id];
+      const txt=ob.modo==='placar'?`${ob.a}×${ob.b}`:(ob.resultado==='A'?jogo.tA:ob.resultado==='B'?jogo.tB:'Empate');
+      outros.push(`<span class="bet-chip">${p.apelido||p.nome.split(' ')[0]}: ${txt}</span>`);
+    });
+  }
+  const othersHTML=outros.length?`<div class="others-bets"><div class="others-label">🔒 Palpites dos outros (visível só para admin)</div>${outros.join('')}</div>`:'';
 
   div.innerHTML=`
     <div class="game-card-hdr">
