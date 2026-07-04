@@ -138,6 +138,14 @@ button,input{font-family:inherit;}
 .pname{font-size:14px;font-weight:600;color:var(--texto);}
 .pphone{font-size:12px;color:var(--texto-muted);}
 .del-btn{width:30px;height:30px;border-radius:8px;border:1px solid #FFCDD2;background:#FFEBEE;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;flex-shrink:0;}
+.ver-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--borda);background:#F0F5FF;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;flex-shrink:0;}
+.palpites-detalhe{background:#F7F9FC;border-radius:10px;border:1px solid var(--borda);padding:10px 12px;margin:-2px 0 10px;}
+.palpite-linha{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--borda);font-size:12.5px;gap:8px;}
+.palpite-linha:last-child{border-bottom:none;}
+.palpite-linha .pl-jogo{color:var(--texto);flex:1;}
+.palpite-linha .pl-fase{display:block;font-size:10.5px;color:var(--texto-muted);}
+.palpite-linha .pl-aposta{font-weight:700;color:var(--verde-medio);white-space:nowrap;}
+.palpite-linha .pl-vazio{color:var(--texto-muted);font-weight:400;}
 .btn-full{width:100%;background:var(--verde-medio);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;}
 .btn-full:hover{background:var(--verde);}
 .btn-dourado{background:var(--dourado);color:var(--verde);}
@@ -1038,11 +1046,54 @@ function renderAdminPanel(){
       const d=document.createElement('div');d.className='prow';
       d.innerHTML=`<div class="pav">${iniciais(p.apelido||p.nome)}</div>
         <div class="pinfo"><div class="pname">${p.nome} (${p.apelido})</div><div class="pphone">${p.cel} · ${nb} palpite${nb!==1?'s':''}</div></div>
+        <div class="ver-btn" onclick="toggleVerPalpites('${p.id}')">👁️</div>
         <div class="del-btn" onclick="confirmDel('${p.id}')">🗑️</div>`;
       ap.appendChild(d);
+      const det=document.createElement('div');
+      det.className='palpites-detalhe';
+      det.id='detalhe-'+p.id;
+      det.style.display='none';
+      ap.appendChild(det);
     });
     if(!PARTS.length)ap.innerHTML='<p style="font-size:13px;color:var(--texto-muted);">Nenhum participante ainda.</p>';
   });
+}
+
+let painelAberto=null;
+async function toggleVerPalpites(uid){
+  const det=document.getElementById('detalhe-'+uid);
+  if(!det)return;
+  if(painelAberto&&painelAberto!==uid){
+    const antigo=document.getElementById('detalhe-'+painelAberto);
+    if(antigo)antigo.style.display='none';
+  }
+  if(det.style.display==='block'){
+    det.style.display='none';
+    painelAberto=null;
+    return;
+  }
+  det.innerHTML='<div style="font-size:12px;color:var(--texto-muted);padding:6px 0;">Carregando palpites...</div>';
+  det.style.display='block';
+  painelAberto=uid;
+  const bets=await fbGet('/palpites/'+uid)||{};
+  BETS[uid]=bets;
+  const jogosComPalpite=JOGOS_DATA.filter(j=>bets[j.id]);
+  if(!jogosComPalpite.length){
+    det.innerHTML='<div style="font-size:12px;color:var(--texto-muted);padding:6px 0;">Nenhum palpite feito ainda.</div>';
+    return;
+  }
+  jogosComPalpite.sort((a,b)=>new Date(a.dataHora)-new Date(b.dataHora));
+  const linhas=jogosComPalpite.map(j=>{
+    const b=bets[j.id];
+    let apostaTxt;
+    if(b.modo==='placar') apostaTxt=`${j.fA} ${b.a}×${b.b} ${j.fB}`;
+    else apostaTxt=b.resultado==='A'?`✅ ${j.tA}`:b.resultado==='B'?`✅ ${j.tB}`:'🤝 Empate';
+    return `<div class="palpite-linha">
+      <div class="pl-jogo">${j.tA} × ${j.tB}<span class="pl-fase">${j.fase||''}${j.grupo?' · '+j.grupo:''} · ${j.data} ${j.hora}</span></div>
+      <div class="pl-aposta">${apostaTxt}</div>
+    </div>`;
+  }).join('');
+  det.innerHTML=linhas;
 }
 
 function renderJogosAdmin(){
