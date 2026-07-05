@@ -179,7 +179,7 @@
   // Mesmo banco Firebase do bolão, coleção separada (/avaliacao2026)
   const FB_URL = 'https://bolao-hexa-2026-default-rtdb.firebaseio.com';
   const ADMIN_CODE = 'gestao2026';
-  const MIN_CHARS = 80; // aproximadamente duas linhas de texto
+  const MIN_CHARS = 50; // aproximadamente uma linha e meia de texto
 
   const BLOCKS = [
     { id:'b1', numeral:'I', title:'Infraestrutura', questions:[
@@ -323,7 +323,7 @@
       return `
       <div class="av-item">
         <div class="av-item-text">${q}</div>
-        <textarea class="av-comment" data-key="${key}" placeholder="Escreva livremente (mínimo de duas linhas)...">${escapeHtml(state.respostas[key] || '')}</textarea>
+        <textarea class="av-comment" data-key="${key}" placeholder="Escreva livremente (mínimo de uma linha)...">${escapeHtml(state.respostas[key] || '')}</textarea>
         <div class="av-charcount ${cls}" id="count-${key}">${len} / ${MIN_CHARS} caracteres mínimos</div>
       </div>`;
     }).join('');
