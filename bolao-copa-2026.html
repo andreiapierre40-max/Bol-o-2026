@@ -93,6 +93,7 @@ button,input{font-family:inherit;}
 .pod-av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;}
 .pod-name{font-size:12px;font-weight:600;color:rgba(255,255,255,0.85);text-align:center;max-width:68px;line-height:1.2;}
 .pod-pts{font-size:11px;color:rgba(255,255,255,0.55);}
+.pod-premio{font-size:12px;font-weight:800;color:var(--dourado-claro,#FFD700);margin-top:1px;}
 .rank-list{margin:-18px 14px 0;}
 .rank-row{background:var(--branco);border-radius:14px;border:1px solid var(--borda);padding:13px 14px;margin-bottom:8px;display:flex;align-items:center;gap:11px;}
 .rank-row.me{border-color:var(--dourado);box-shadow:0 0 0 1px var(--dourado);}
@@ -405,8 +406,8 @@ const JOGOS = [
   {id:51,tA:'Noruega',fA:'🇳🇴',tB:'Inglaterra',fB:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',data:'11/07',hora:'18:00',dataHora:'2026-07-11T18:00:00-03:00',local:'Miami',fase:'Quartas',grupo:''},
   {id:52,tA:'Argentina',fA:'🇦🇷',tB:'Suíça',fB:'🇨🇭',data:'11/07',hora:'22:00',dataHora:'2026-07-11T22:00:00-03:00',local:'Kansas City',fase:'Quartas',grupo:''},
   // ═══════════════ SEMIFINAIS ═══════════════
-  {id:53,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'14/07',hora:'16:00',dataHora:'2026-07-14T16:00:00-03:00',local:'Dallas (AT&T)',fase:'Semifinais',grupo:''},
-  {id:54,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'15/07',hora:'16:00',dataHora:'2026-07-15T16:00:00-03:00',local:'Dallas (AT&T)',fase:'Semifinais',grupo:''},
+  {id:53,tA:'França',fA:'🇫🇷',tB:'Espanha',fB:'🇪🇸',data:'14/07',hora:'16:00',dataHora:'2026-07-14T16:00:00-03:00',local:'Dallas (AT&T)',fase:'Semifinais',grupo:''},
+  {id:54,tA:'Inglaterra',fA:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',tB:'Argentina',fB:'🇦🇷',data:'15/07',hora:'16:00',dataHora:'2026-07-15T16:00:00-03:00',local:'Atlanta (Mercedes-Benz)',fase:'Semifinais',grupo:''},
   // ═══════════════ 3º LUGAR E FINAL ═══════════════
   {id:55,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'18/07',hora:'18:00',dataHora:'2026-07-18T18:00:00-03:00',local:'Miami',fase:'3º Lugar',grupo:''},
   {id:56,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'19/07',hora:'16:00',dataHora:'2026-07-19T16:00:00-03:00',local:'MetLife Stadium, NJ',fase:'Final',grupo:'🏆 Grande Final'},
@@ -959,9 +960,9 @@ async function renderRanking(){
   document.getElementById('rank-sub').textContent=`${rk.length} participante${rk.length!==1?'s':''} · Atualizado ao vivo`;
   // pódio: rk[0]=1º(ouro/centro), rk[1]=2º(prata/esquerda), rk[2]=3º(bronze/direita)
   const podiumConfig = [
-    {rankIdx:1, medal:'🥈', size:'46px', bg:'#A8A8A8', clr:'#fff', fontSize:'16px', order:1},
-    {rankIdx:0, medal:'🥇', size:'58px', bg:'var(--dourado)', clr:'var(--verde)', fontSize:'18px', order:2},
-    {rankIdx:2, medal:'🥉', size:'40px', bg:'#CD7F32', clr:'#fff', fontSize:'14px', order:3},
+    {rankIdx:1, medal:'🥈', size:'46px', bg:'#A8A8A8', clr:'#fff', fontSize:'16px', order:1, premio:'R$ 67,50'},
+    {rankIdx:0, medal:'🥇', size:'58px', bg:'var(--dourado)', clr:'var(--verde)', fontSize:'18px', order:2, premio:'R$ 112,50'},
+    {rankIdx:2, medal:'🥉', size:'40px', bg:'#CD7F32', clr:'#fff', fontSize:'14px', order:3, premio:'R$ 45,00'},
   ];
   document.getElementById('podium').innerHTML=podiumConfig.map(cfg=>{
     const p=rk[cfg.rankIdx];if(!p)return'';
@@ -971,6 +972,7 @@ async function renderRanking(){
       <div class="pod-av" style="width:${cfg.size};height:${cfg.size};font-size:${cfg.fontSize};background:${cfg.bg};color:${cfg.clr}${isMe?';border:2px solid var(--dourado-claro)':''}">${iniciais(p.apelido||p.nome)}</div>
       <div class="pod-name">${p.apelido||p.nome.split(' ')[0]}</div>
       <div class="pod-pts">${p.total} pts</div>
+      <div class="pod-premio">${cfg.premio}</div>
     </div>`;
   }).join('');
   const list=document.getElementById('rank-list');
