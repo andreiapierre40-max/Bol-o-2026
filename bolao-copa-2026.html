@@ -36,6 +36,18 @@ button,input{font-family:inherit;}
 .btn-verde{width:100%;background:var(--verde-medio);color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
 .login-hint{font-size:12px;color:var(--texto-muted);text-align:center;margin-top:12px;line-height:1.5;}
 .link{color:var(--verde-claro);cursor:pointer;text-decoration:underline;}
+.final-splash{position:fixed;inset:0;z-index:999;background:radial-gradient(ellipse at 50% 0%,#1A5C35 0%,#0A2E1A 60%,#071F13 100%);display:flex;align-items:center;justify-content:center;overflow:hidden;opacity:1;visibility:visible;transition:opacity .55s ease,visibility .55s ease;}
+.final-splash.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.fs-flag{position:absolute;font-size:34px;opacity:.5;animation:fsFloat linear infinite;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));will-change:transform;}
+@keyframes fsFloat{0%{transform:translateY(112vh) rotate(-10deg);}50%{transform:translateY(48vh) rotate(8deg);}100%{transform:translateY(-16vh) rotate(-10deg);}}
+.fs-card{position:relative;z-index:2;max-width:380px;margin:0 22px;text-align:center;background:rgba(255,255,255,0.07);border:1px solid rgba(200,168,75,0.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:22px;padding:36px 24px 30px;box-shadow:0 14px 44px rgba(0,0,0,.45);animation:fsCardIn .6s ease both;}
+@keyframes fsCardIn{0%{opacity:0;transform:translateY(14px) scale(.97);}100%{opacity:1;transform:translateY(0) scale(1);}}
+.fs-trophy{font-size:44px;margin-bottom:12px;}
+.fs-title{color:var(--dourado);font-size:20px;font-weight:900;letter-spacing:-.3px;margin-bottom:16px;line-height:1.35;}
+.fs-text{color:rgba(255,255,255,.9);font-size:15px;line-height:1.65;margin-bottom:6px;}
+.fs-sign{color:var(--dourado-claro);font-size:16px;font-weight:800;margin-top:20px;letter-spacing:.2px;}
+.fs-btn{margin-top:26px;background:var(--dourado);color:#1A2E1F;border:none;border-radius:24px;padding:13px 28px;font-size:14.5px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(200,168,75,.35);}
+@media (max-width:360px){.fs-flag{font-size:28px;}.fs-card{padding:28px 18px 24px;}}
 .step{display:none;}.step.active{display:block;}
 .otp-row{display:flex;gap:10px;margin-bottom:14px;}
 .otp-digit{flex:1;border:1.5px solid #D0DDD4;border-radius:10px;padding:12px 4px;font-size:24px;font-weight:800;text-align:center;color:var(--verde);outline:none;background:var(--branco);}
@@ -190,6 +202,27 @@ button,input{font-family:inherit;}
 </style>
 </head>
 <body>
+<div class="final-splash" id="final-splash">
+  <span class="fs-flag" style="left:6%;animation-duration:13s;animation-delay:-1s;">🇧🇷</span>
+  <span class="fs-flag" style="left:16%;animation-duration:16s;animation-delay:-6s;">🇦🇷</span>
+  <span class="fs-flag" style="left:27%;animation-duration:11s;animation-delay:-3s;">🇪🇸</span>
+  <span class="fs-flag" style="left:38%;animation-duration:15s;animation-delay:-9s;">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
+  <span class="fs-flag" style="left:50%;animation-duration:12s;animation-delay:-4s;">🇫🇷</span>
+  <span class="fs-flag" style="left:61%;animation-duration:17s;animation-delay:-11s;">🇵🇹</span>
+  <span class="fs-flag" style="left:72%;animation-duration:14s;animation-delay:-2s;">🇩🇪</span>
+  <span class="fs-flag" style="left:83%;animation-duration:13.5s;animation-delay:-8s;">🇮🇹</span>
+  <span class="fs-flag" style="left:92%;animation-duration:16.5s;animation-delay:-5s;">🇳🇱</span>
+  <span class="fs-flag" style="left:12%;animation-duration:18s;animation-delay:-13s;">🇺🇸</span>
+  <span class="fs-flag" style="left:45%;animation-duration:19s;animation-delay:-7s;">🇲🇽</span>
+  <span class="fs-flag" style="left:78%;animation-duration:14.5s;animation-delay:-10s;">🇨🇦</span>
+  <div class="fs-card">
+    <div class="fs-trophy">🏆</div>
+    <div class="fs-title">Chegou o momento da última aposta.</div>
+    <div class="fs-text">Talvez o vencedor não seja surpresa, mas valeu muito a diversão e cada risada que demos.</div>
+    <div class="fs-sign">Valeu, família Pierre! ⚽💛</div>
+    <button class="fs-btn" onclick="dismissFinalSplash()">⚽ Fazer meu palpite</button>
+  </div>
+</div>
 <nav class="nav">
   <div class="nav-logo">🏆 Bolão Copa 2026</div>
   <div class="nav-right">
@@ -409,8 +442,8 @@ const JOGOS = [
   {id:53,tA:'França',fA:'🇫🇷',tB:'Espanha',fB:'🇪🇸',data:'14/07',hora:'16:00',dataHora:'2026-07-14T16:00:00-03:00',local:'Dallas (AT&T)',fase:'Semifinais',grupo:''},
   {id:54,tA:'Inglaterra',fA:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',tB:'Argentina',fB:'🇦🇷',data:'15/07',hora:'16:00',dataHora:'2026-07-15T16:00:00-03:00',local:'Atlanta (Mercedes-Benz)',fase:'Semifinais',grupo:''},
   // ═══════════════ 3º LUGAR E FINAL ═══════════════
-  {id:55,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'18/07',hora:'18:00',dataHora:'2026-07-18T18:00:00-03:00',local:'Miami',fase:'3º Lugar',grupo:''},
-  {id:56,tA:'A definir',fA:'🏳',tB:'A definir',fB:'🏳',data:'19/07',hora:'16:00',dataHora:'2026-07-19T16:00:00-03:00',local:'MetLife Stadium, NJ',fase:'Final',grupo:'🏆 Grande Final'},
+  {id:55,tA:'França',fA:'🇫🇷',tB:'Inglaterra',fB:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',data:'18/07',hora:'18:00',dataHora:'2026-07-18T18:00:00-03:00',local:'Miami',fase:'3º Lugar',grupo:''},
+  {id:56,tA:'Espanha',fA:'🇪🇸',tB:'Argentina',fB:'🇦🇷',data:'19/07',hora:'16:00',dataHora:'2026-07-19T16:00:00-03:00',local:'MetLife Stadium, NJ',fase:'Final',grupo:'🏆 Grande Final'},
 ];
 
 const FB_URL='https://bolao-hexa-2026-default-rtdb.firebaseio.com';
@@ -1413,6 +1446,12 @@ async function clearAll(){
   location.reload();
 }
 
+function dismissFinalSplash(){
+  const el=document.getElementById('final-splash');
+  if(!el)return;
+  el.classList.add('hide');
+  setTimeout(()=>{el.style.display='none';},600);
+}
 window.addEventListener('load',()=>{
   if(ME){
     document.getElementById('login-screen').classList.remove('active');
