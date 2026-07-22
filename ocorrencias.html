@@ -1,58 +1,517 @@
-Skip to content
-andreiapierre40-max
-Bol-o-2026
-Repository navigation
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security and quality
-Insights
-Settings
-Commit c3cd541
-andreiapierre40-max
-andreiapierre40-max
-authored
-2 hours ago
-·
-·
-Verified
-Update ocorrencias.html
-main
-1 parent 
-9913f68
- commit 
-c3cd541
-1 file changed
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de Ocorrências — EE Maya Alice Ekman</title>
+<style>
+  :root{
+    --navy:#1F3864;
+    --navy-dark:#152647;
+    --gold:#C9A227;
+    --gold-light:#FBF3DA;
+    --bg:#F2F4F8;
+    --gray:#6B7280;
+    --red:#B3261E;
+    --green:#1E7A34;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:Arial, Helvetica, sans-serif; background:var(--bg); color:#222;
+    padding-bottom:60px;
+  }
+  header.top{
+    background:linear-gradient(135deg, var(--navy), var(--navy-dark));
+    color:#fff; padding:18px 16px 14px; text-align:center;
+    border-bottom:4px solid var(--gold);
+  }
+  header.top h1{ margin:0 0 2px; font-size:19px; letter-spacing:.3px;}
+  header.top p{ margin:0; font-size:12px; opacity:.85;}
+  nav.tabs{
+    display:flex; max-width:640px; margin:14px auto 0; gap:8px; padding:0 12px;
+  }
+  nav.tabs button{
+    flex:1; padding:10px 6px; border-radius:10px 10px 0 0; border:1px solid #d8d8d8; border-bottom:none;
+    background:#e9ecf3; color:var(--navy); font-weight:bold; font-size:13px; cursor:pointer;
+  }
+  nav.tabs button.active{ background:#fff; color:var(--navy); border-color:var(--gold); box-shadow:0 -2px 0 var(--gold) inset;}
+  main{ max-width:640px; margin:0 auto; padding:0 12px 30px;}
+  .card{
+    background:#fff; border-radius:0 0 14px 14px; padding:18px 16px 22px; box-shadow:0 2px 10px rgba(0,0,0,.06);
+    border:1px solid #e3e6ee; border-top:none;
+  }
+  .card + .card{ margin-top:16px; border-radius:14px; border-top:1px solid #e3e6ee;}
+  h2{ color:var(--navy); font-size:16px; margin:0 0 12px;}
+  h3{ color:var(--navy); font-size:14px; margin:18px 0 8px;}
+  label{ display:block; font-size:13px; font-weight:bold; color:var(--navy); margin:14px 0 6px;}
+  select, input[type=text], input[type=date], textarea{
+    width:100%; padding:11px 10px; border:1.5px solid #cfd4e0; border-radius:8px; font-size:15px; font-family:inherit;
+    background:#fff;
+  }
+  select:focus, input:focus, textarea:focus{ outline:none; border-color:var(--navy);}
+  textarea{ resize:vertical; min-height:60px;}
+  .pillgrid{ display:flex; flex-wrap:wrap; gap:8px; margin-top:4px;}
+  .pill{
+    padding:9px 13px; border-radius:20px; border:1.5px solid #cfd4e0; background:#fff; color:#333;
+    font-size:13px; cursor:pointer; user-select:none; transition:.12s;
+  }
+  .pill.selected{ background:var(--navy); border-color:var(--navy); color:#fff; font-weight:bold;}
+  .pill.tipo.selected{ background:var(--gold); border-color:var(--gold); color:var(--navy-dark);}
+  .hint{ font-size:12px; color:var(--gray); margin-top:4px;}
+  .btn{
+    display:inline-block; width:100%; padding:13px; margin-top:20px; border:none; border-radius:10px;
+    background:var(--navy); color:#fff; font-size:15px; font-weight:bold; cursor:pointer;
+  }
+  .btn:active{ background:var(--navy-dark);}
+  .btn.secondary{ background:#fff; color:var(--navy); border:1.5px solid var(--navy);}
+  .btn.gold{ background:var(--gold); color:var(--navy-dark);}
+  .btn.small{ width:auto; padding:9px 14px; font-size:13px; margin-top:0;}
+  .row2{ display:flex; gap:10px;}
+  .row2 > div{ flex:1;}
+  .msg{
+    margin-top:14px; padding:12px 14px; border-radius:8px; font-size:13.5px; display:none;
+  }
+  .msg.ok{ background:#e6f4ea; color:var(--green); border:1px solid #b7ddc3; display:block;}
+  .msg.err{ background:#fbe9e7; color:var(--red); border:1px solid #f0c4bf; display:block;}
+  .lockbox{ text-align:center; padding:30px 10px;}
+  .lockbox input{ max-width:220px; margin:0 auto 12px; text-align:center;}
+  table.rep{ width:100%; border-collapse:collapse; margin-top:10px; font-size:12.5px;}
+  table.rep th{ background:var(--navy); color:#fff; padding:7px 6px; text-align:left;}
+  table.rep td{ padding:6px; border-bottom:1px solid #e3e6ee; vertical-align:top;}
+  table.rep tr:nth-child(even){ background:#f7f8fc;}
+  .tag{ display:inline-block; background:var(--gold-light); border:1px solid var(--gold); color:var(--navy-dark); border-radius:12px; padding:1px 8px; font-size:11px; margin:1px 2px 1px 0;}
+  .summary{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+  .summary .box{ flex:1; min-width:100px; background:var(--gold-light); border:1px solid var(--gold); border-radius:8px; padding:10px; text-align:center;}
+  .summary .box b{ display:block; font-size:20px; color:var(--navy);}
+  .summary .box span{ font-size:11px; color:var(--navy-dark);}
+  .toplist{ margin-top:10px; font-size:13px;}
+  .toplist li{ margin-bottom:4px;}
+  footer{ text-align:center; font-size:11px; color:var(--gray); margin-top:24px;}
+  #printHead{ display:none; }
+  @media print{
+    header.top, nav.tabs, #adminFilters, #adminActions, .no-print{ display:none !important; }
+    body{ background:#fff; padding:0;}
+    main{ max-width:100%; padding:0;}
+    .card{ box-shadow:none; border:none; padding:0;}
+    #printHead{ display:block; text-align:center; margin-bottom:14px; }
+    #printHead h1{ color:#1F3864; font-size:18px; margin:0 0 2px;}
+    #printHead p{ font-size:12px; color:#444; margin:0;}
+    table.rep th{ background:#1F3864 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  }
+</style>
+</head>
+<body>
 
-+1
--1
-Lines changed: 1 addition & 1 deletion
-File tree
-Filter files…
-ocorrencias.html
-Search within code
- 
-‎ocorrencias.html‎
-+1
--1
-Lines changed: 1 addition & 1 deletion
-Original file line number	Diff line number	Diff line change
-@@ -243,7 +243,7 @@ <h1>EE MAYA ALICE EKMAN — Registro de Ocorrências</h1>
+<header class="top">
+  <h1>EE MAYA ALICE EKMAN</h1>
+  <p>Diretoria de Ensino – Região de São Vicente · Peruíbe/SP · Registro de Ocorrências</p>
+</header>
+
+<nav class="tabs">
+  <button id="tabRegistro" class="active" onclick="mostrarAba('registro')">📝 Registrar Ocorrência</button>
+  <button id="tabAdmin" onclick="mostrarAba('admin')">📊 Relatórios (Direção)</button>
+</nav>
+
+<main>
+
+  <!-- ==================== REGISTRO ==================== -->
+  <section id="viewRegistro" class="card">
+    <h2>Nova ocorrência</h2>
+
+    <label>Turma</label>
+    <select id="fTurma" onchange="popularAlunos()">
+      <option value="">Selecione a turma...</option>
+    </select>
+
+    <label>Aluno(a)</label>
+    <select id="fAluno" disabled>
+      <option value="">Selecione a turma primeiro...</option>
+    </select>
+
+    <div class="row2">
+      <div>
+        <label>Data</label>
+        <input type="date" id="fData">
+      </div>
+      <div>
+        <label>Responsável pelo preenchimento</label>
+        <input type="text" id="fProfessor" placeholder="Nome do(a) responsável">
+      </div>
+    </div>
+
+    <label>Componente Curricular</label>
+    <div class="pillgrid" id="pillComponentes"></div>
+
+    <label>Ocorrência (marque uma ou mais opções)</label>
+    <div class="pillgrid" id="pillTipos"></div>
+    <div id="outrosBox" style="display:none;">
+      <label>Descreva "Outros"</label>
+      <input type="text" id="fOutrosDetalhe" placeholder="Descrever brevemente...">
+    </div>
+
+    <label>Observação (opcional)</label>
+    <textarea id="fObs" placeholder="Detalhes adicionais, se necessário..."></textarea>
+
+    <button class="btn" onclick="registrarOcorrencia()">Registrar Ocorrência</button>
+    <div class="msg" id="msgRegistro"></div>
+  </section>
+
+  <!-- ==================== ADMIN (bloqueado) ==================== -->
+  <section id="viewAdmin" class="card" style="display:none;">
+
+    <div id="adminLock" class="lockbox">
+      <h2>Acesso da Direção</h2>
+      <p style="font-size:13px;color:var(--gray);">Digite a senha para ver os relatórios.</p>
+      <input type="password" id="senhaAdmin" placeholder="Senha">
+      <br>
+      <button class="btn small" onclick="entrarAdmin()">Entrar</button>
+      <div class="msg" id="msgLock"></div>
+    </div>
+
+    <div id="adminPainel" style="display:none;">
+      <h2>Relatórios de Ocorrências</h2>
+
+      <div id="adminFilters">
+        <div class="row2">
+          <div>
+            <label>Turma</label>
+            <select id="rTurma" onchange="popularAlunoFiltro()">
+              <option value="">Todas as turmas</option>
+            </select>
+          </div>
+          <div>
+            <label>Aluno(a)</label>
+            <select id="rAluno"><option value="">Todos os alunos</option></select>
+          </div>
+        </div>
+        <div class="row2">
+          <div>
+            <label>De</label>
+            <input type="date" id="rDe">
+          </div>
+          <div>
+            <label>Até</label>
+            <input type="date" id="rAte">
+          </div>
+        </div>
+        <label>Tipo de ocorrência</label>
+        <div class="pillgrid" id="pillFiltroTipos"></div>
+
+        <button class="btn gold" onclick="aplicarFiltros()">🔍 Filtrar</button>
+      </div>
+
+      <div id="printHead">
+        <h1>EE MAYA ALICE EKMAN — Registro de Ocorrências</h1>
+        <p id="printSubtitulo"></p>
+      </div>
+
+      <div class="summary" id="resumoBox"></div>
+      <div id="topAlunosBox"></div>
+
+      <div id="adminActions" class="no-print" style="margin-top:16px; display:flex; gap:10px;">
+        <button class="btn secondary small" onclick="window.print()">🖨️ Imprimir Relatório</button>
+        <button class="btn secondary small" onclick="exportarCSV()">⬇️ Exportar CSV</button>
+        <button class="btn secondary small" onclick="carregarDados(true)">🔄 Atualizar</button>
+      </div>
+
+      <table class="rep" id="tabelaResultados">
+        <thead>
+          <tr>
+            <th>Data</th><th>Turma</th><th>Aluno(a)</th><th>Componente</th><th>Professor(a)</th><th>Ocorrência</th><th>Observação</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyResultados"></tbody>
+      </table>
+      <p id="semResultados" style="display:none; color:var(--gray); font-size:13px; margin-top:14px;">Nenhum registro encontrado para os filtros selecionados.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>EE Maya Alice Ekman · Registro interno de ocorrências</footer>
+
+<script>
+/* =================== DADOS =================== */
+const TURMAS = {
+  "6º ANO A": ["Alice Farias da Silva","Alice Inacio Ferreira","Ana Julia Pires Pereira","Anna Julia Dall Armi Matias","Caroline de Campos Lima","Davi Alves Fiuza","Flavio Bryan Nunes Queiros","Isabela da Silva de Souza","Joao Paulo Lima Costa","Kamilly Victoria Valentim do Nascimento","Kauanne Vitoria Bispo Jose","Laryssa Vitoria Pereira Miguel","Levi Rhangell de Oliveira Silva","Luiz Felipe Farias da Silva","Luiz Henrique Soares dos Santos","Manuella Barbosa do Nascimento","Marcos Vinicius Bastos de Souza","Matheus Antony Lima de Freitas","Miguel da Silva Rodrigues","Miguel Edvaldo Miranda Ribeiro","Miguel Soares de Oliveira","Murillo Vinicius Siqueira Werlich","Myllena Mikaela Almeida dos Santos","Nathan Ribeiro Previato","Paloma Oliveira Santana","Raissa da Silva dos Santos","Richard Estevam Pereira Sabino","Rodrigo José Batista de Souza","Sofia Vitoria Custodio Alves","Yuri da Silva Landim","Murilo de Alencar dos Santos","Miguel da Silva Pitta","Natally Ferreira dos Reis","Enzo Gabriel Alves Guimaraes","Ivan Costa Ferreira"],
+  "6º ANO B": ["Adam Rodrigues Kamoli Adedoyin","Alice Maria da Silva","Ana Karolina da Silva Lima","Bernardo Mantovani dos Santos","Bruno de Lima Soares","Bryan Siqueira Soares Barboza","Dafny Lemos de Sa","Daniel Lucio Henrique Veloso","Davi Lucca Crestani Marques Fava","Gabriel Ribeiro Silva","Gabriel Watson Biagioni Silva Costa","Heloisa Albuquerque Guimaraes de Freitas","Isabelly Chianca Latanzi","Isadora Anjos de Freitas","Joao Pedro Lima Costa","Julia Gomes de Sa Souza","Lara Karoline Silva Ramos","Larissa Raio de Sol dos Santos","Marcos Vinicius Becker Batista","Melissa Vitoria da Silva Lima","Miguel Lorenzo Alves Monteiro","Rafaella Luisa de Souza Fernandes","Rayssa Maciel da Silva","Ruan Guilherme Peres da Silva","Ruann Pablo da Silva Moraes","Sofhia Alves de Souza Araujo","Thayla Eva dos Reis Carvalho","Valentina Lima","Vitor Brucci Alves de Oliveira","Emerson Augusto Santos Junior","Mariah Guedes Silva dos Santos","Bernardo Araujo Caetano dos Santos","Leticia da Silva Santos","Josue Rodrigues Nascimento","Vitória Rocha de Oliveira"],
+  "7º ANO A": ["Alice Militao Martins Barra","Ana Beatriz dos Reis Santos Claro","Ana Julia Ribeiro da Costa","Anna Karolina da Silva Miranda","Anna Lysie Sousa Schunck","Arthur Ximenes Lins de Albuquerque","Breno Teixeira da Silva Nunes","Bryan Davy da Silva","Davi Henrique da Silva Marquiori","Davi Lucca Oliveira Marques","Lívia Soldi Oliveira","Enzo Rosa Hurtado","Felipe Arthur Almeida de Paula","Flavia Cristina Ferreira da Silva","Gabriel Vinicius Dutra dos Santos","Joao Vitor Lima Brito","José Roberto Hades Sales Oliveira","Julia Polline de Lima Silva","Kaio Aparecido Cabeca de Oliveira","Livia Helena Alves Santos","Manuela Ferreira Freire Conserino","Maria Luiza Ribeiro da Costa","Maria Vitoria Monteiro Batista","Mariana Cristina dos Santos Ramos","Matheus Henrique Lemos Lopes","Miguel Dela Libera Rios","Nycollas Phelipe de Souza Lourenco","Pedro Henrique Santana Almeida","Rafaela Sarilho","Talita Micaella Fernandes Moura Mendes","Keny Emanuel Calixto Leite","Tayna Vitoria Souza Nascimento","Davi Lucas dos Santos Rodrigues","Bianca Farias da Silva","Davi Becker Santos","Ananda Rebeca do Nascimento Bessa"],
+  "7º ANO B": ["Angelo Gabriel Goncalves Crespo Fazolin","Anna Julia da Conceicao","Arthur da Silva Lima","Arthur Martins Fontes Cantarella","Bruna Luzia Moreira Vinagre","Davi Fagundes de Jesus","Enzo Gabriel Dias Mendes","Fernanda de Godoy Ayres","Gabriel dos Santos Pinto","Gabriel Pereira de Souza","Guilherme Carvalho de Freitas Coelho","Hanna Beatriz Aparecida Lopes Duarte","Helena Machado Moraes","Henri Gabriel Lopes da Silva Rios","Jefferson Cristovao Araujo Souza","Joao Vitor Souza Santos","Juan Gabriel Ramalho de Castro","Kaio Borges dos Santos","Laura Ferreira Campos","Lorena Valenttina Santiago","Luna Marques da Silva Ortiz","Marco Antonio Souza Lira","Maria Eduarda Sousa dos Santos","Maria Vitoria Oliveira","Micaell Tayllor Ribeiro","Miguel Kevin Soares de Araujo","Pedro Henrique Santos de Paula","Pedro Silva Guimaraes","Rafaella Gomes Ramos","Sophia dos Santos Pereira","Sophia Santana Paramo","Vinicius Teixeira da Silva Nunes","Cesar Augusto Cordeiro de Campos","Marcos Roberto Borges da Costa","Rafaela Prechedes de Souza"],
+  "8º ANO A": ["Andre Kayc Santana dos Santos","Anna Clara Santos Vieira","Bryan de Oliveira Araujo Nora","Davi Reis de Oliveira Silva","Davi Vitor Lopes Maximiano","Edmilson Dias Pereira Neto","Enzo Aragao Silva","Felipe Santana Almeida dos Santos","Heloisa de Fatima Fernandes Santos","Hiago Aparecido Cabeca dos Santos","Higor Santos de Moraes","Isadora Pereira da Silva Rocha","Jady Gabrieli Medeiros Bomrruque","Joao Lucas de Oliveira de Souza","Julia Chianca Latanzi","Julia Militao Ataide Nogueira","Julia Rodrigues Toledo","Layslla Goncalves de Oliveira","Livelly Emannuelly Silva dos Santos","Luiz Philipe Heidan de Almeida Lopes","Maria Eduarda Goncalves Vargas Ferreira","Marina Benedito Souza","Matheus Victor Pereira Ribeiro","Maxsuel de Paula Santos Lopes","Nathaly Santos Torres","Neilyn Vitória Sanches","Nicolle Castellan Vieira","Rafael de Souza Miranda","Rafaela Ferreira dos Santos","Rafaella Nogueira dos Santos","Robson Ferreira Gomes","Samuel Moreira Silva","Maria do Bonfim Silva Castro","Julia Vitoria Leal dos Santos","Heithor Santos Silva"],
+  "8º ANO B": ["Alice Fortes Lopes de Souza","Alice Maryana Soares de Oliveira","Ana Clara Pereira Machado","Ana Julya Lopes Maximiano","Arthur Araujo dos Santos","Arthur Inacio Ferreira","Caio Santos","Daniel Kauan da Silva Nunes","Davi Pereira Santos","Derick Lemos de Sa","Eric Gustavo de Almeida Souza","Fernanda Rovani Eufrazio dos Santos","Gabrielly da Silva Pupo","Guilherme de Castro Santos","Gustavo Carvalho Franca","Henrique Silva Souza","Hiago Santos de Moraes","Julia Catarina Goncalves de Jesus","Julia Gomes da Silva","Maria Eduarda Alves Santos","Miguel Alves Rodrigues Dias","Paulo Andre Regio da Silva Souza","Pedro Lucas Mostafe Bezerra","Rhayane Gomes da Silva Rodrigues","Riahn Guilherme de Oliveira Lima","Ricardo de Souza Miranda","Rubem Lopes dos Santos Lira","Salomao Henrique Ormundo Candido","Sofia Nogueira dos Santos","Valentina Mantovani dos Santos","Victor Gabriel Pereira da Silva","Victor Henzo Lauredo Martelli de Oliveira","Victoria Eduarda de Almeida Mota","Willian Krychijanowski Sa Teles","Júlia Abreu Salve e Jesus","Brayan Willian Chagas"],
+  "9º ANO A": ["Ana Julia de Freitas Alves","Ataue Gomes Pinto","Davi Salustiano dos Santos","Doralice Blosfeld de Albuquerque","Enzo Vitório de Freitas Marques","Gabriela Leticia Pereira da Silva","Gean Carlos Dutra dos Santos","Gustavo Andrade Lemos","Heloisa Victoria Rodrigues Machado","Ingrid Aguiar Bispo","Izabella dos Santos Diniz Camargo","Jhon Brahian Willians Ferreira","Jullio Cesar Xavier da Silva Santos","Kaua Ricardo Almeida de Paula","Kauan Adriano da Silva Medeiros","Luca Sasori Gomes Kamia","Luciano Pereira dos Santos Filho","Luis Gustavo Santos de Souza","Melissa Marques de Paula Ventura","Micaella Ribeiro","Pedro Henrique Sabino de Lima","Perseu Henrique Patriota","Rayane Ribeiro dos Santos","Kauan Ribeiro de Araujo","Adrielly Alves Pereira","Sophia Nunes Carvalho Neves","Karla Cristina Eloi dos Santos","Ana Carolina Lopes Freitas","Carlos Eduardo Ferreira da Silva","Pedro Henrique do Nascimento Silva"],
   "9º ANO B": ["Allana Coimbra Freitas da Silva","Ana Clara da Silva Marquiori","Ana Livia da Silva Oliveira","Beatriz Rodrigues Almeida","Gabriel Henrique Ferreira Borges","Genival da Silva","Giovanna Ferreira de Godoy","Hevilyn Nardes Motta da Silva","Icaro Pereira da Silva","Lenita Emanuely Rodrigues Machado","Lucas Saymon Santos de Oliveira","Luna Estela Moreira Salvo","Lyncon Wesslley Silva dos Santos","Marcio Henrique Alves de Souza","Maria Luiza Mendes Santana","Max Xavier da Silva","Nicolas Eduardo Santos Oliveira","Pietro Davi Guitevein Pereira","Rodrigo Oliveira de Sena Kuhl","Saphira Clelia Franca","Sofia Lara Pereira Fontes","Vitor Bryan Adriano da Silva","Marcos Willian Alves de Paula Soares","Vitor Ramalho Gomes da Silva","Yan Carlos Ferreira Menezes","Israel Oliveira Garcia","Lorena da Roza Cardoso Baptista"]
 };
 
-const COMPONENTES = ["LP","MAT","OE (MAT)","OE (PORT)","CIÊN","ARTE","ED. FÍSICA","ELETIVAS","TECNO","ING","PRAT EXP","RED","HIST","GEO","PV","EMA","OUTROS"];
 const COMPONENTES = ["LP","MAT","OE (MAT)","OE (PORT)","CIÊN","ARTE","ED. FÍSICA","ELETIVAS","TECNO","ING","PRAT EXP","RED","HIST","GEO","PV","EMA","ROBÓTICA","OUTROS"];
 const TIPOS = ["Atraso","Não Realizou a Atividade","Indisciplina","Outros"];
 
 const DB_URL = "https://bolao-hexa-2026-default-rtdb.firebaseio.com/ocorrencias2026";
-0 commit comments
-Comments
-0
- (0)
-Comment
-You're not receiving notifications from this thread.
+const SENHA_ADMIN = "maya2026@";
 
+let componenteSelecionado = null;
+let tiposSelecionados = new Set();
+let filtroTiposSelecionados = new Set();
+let registrosCache = [];
+
+/* =================== NAV =================== */
+function mostrarAba(aba){
+  document.getElementById('viewRegistro').style.display = aba==='registro' ? 'block' : 'none';
+  document.getElementById('viewAdmin').style.display = aba==='admin' ? 'block' : 'none';
+  document.getElementById('tabRegistro').classList.toggle('active', aba==='registro');
+  document.getElementById('tabAdmin').classList.toggle('active', aba==='admin');
+}
+
+/* =================== INIT =================== */
+function init(){
+  const selTurma = document.getElementById('fTurma');
+  const selRTurma = document.getElementById('rTurma');
+  Object.keys(TURMAS).forEach(t=>{
+    selTurma.appendChild(new Option(t, t));
+    selRTurma.appendChild(new Option(t, t));
+  });
+
+  const pillComp = document.getElementById('pillComponentes');
+  COMPONENTES.forEach(c=>{
+    const b = document.createElement('button');
+    b.type='button'; b.className='pill'; b.textContent=c;
+    b.onclick=()=>{ componenteSelecionado=c;
+      [...pillComp.children].forEach(el=>el.classList.remove('selected'));
+      b.classList.add('selected');
+    };
+    pillComp.appendChild(b);
+  });
+
+  const pillTipos = document.getElementById('pillTipos');
+  TIPOS.forEach(t=>{
+    const b = document.createElement('button');
+    b.type='button'; b.className='pill tipo'; b.textContent=t;
+    b.onclick=()=>{
+      if(tiposSelecionados.has(t)){ tiposSelecionados.delete(t); b.classList.remove('selected'); }
+      else{ tiposSelecionados.add(t); b.classList.add('selected'); }
+      document.getElementById('outrosBox').style.display = tiposSelecionados.has('Outros') ? 'block':'none';
+    };
+    pillTipos.appendChild(b);
+  });
+
+  const pillFiltro = document.getElementById('pillFiltroTipos');
+  TIPOS.forEach(t=>{
+    const b = document.createElement('button');
+    b.type='button'; b.className='pill tipo'; b.textContent=t;
+    b.onclick=()=>{
+      if(filtroTiposSelecionados.has(t)){ filtroTiposSelecionados.delete(t); b.classList.remove('selected'); }
+      else{ filtroTiposSelecionados.add(t); b.classList.add('selected'); }
+    };
+    pillFiltro.appendChild(b);
+  });
+
+  document.getElementById('fData').value = new Date().toISOString().slice(0,10);
+}
+
+function popularAlunos(){
+  const turma = document.getElementById('fTurma').value;
+  const sel = document.getElementById('fAluno');
+  sel.innerHTML='';
+  if(!turma){ sel.disabled=true; sel.appendChild(new Option('Selecione a turma primeiro...','')); return; }
+  sel.disabled=false;
+  sel.appendChild(new Option('Selecione o(a) aluno(a)...',''));
+  TURMAS[turma].forEach(a=> sel.appendChild(new Option(a,a)));
+}
+
+function popularAlunoFiltro(){
+  const turma = document.getElementById('rTurma').value;
+  const sel = document.getElementById('rAluno');
+  sel.innerHTML='';
+  sel.appendChild(new Option('Todos os alunos',''));
+  if(turma){ TURMAS[turma].forEach(a=> sel.appendChild(new Option(a,a))); }
+}
+
+/* =================== REGISTRO =================== */
+async function registrarOcorrencia(){
+  const turma = document.getElementById('fTurma').value;
+  const aluno = document.getElementById('fAluno').value;
+  const data = document.getElementById('fData').value;
+  const professor = document.getElementById('fProfessor').value.trim();
+  const obs = document.getElementById('fObs').value.trim();
+  const outrosDetalhe = document.getElementById('fOutrosDetalhe').value.trim();
+  const msg = document.getElementById('msgRegistro');
+
+  if(!turma || !aluno || !data || !professor || !componenteSelecionado || tiposSelecionados.size===0){
+    msg.className='msg err'; msg.textContent='Preencha turma, aluno, data, professor(a), componente curricular e marque ao menos um tipo de ocorrência.';
+    return;
+  }
+
+  const payload = {
+    turma, aluno, data, professor,
+    componente: componenteSelecionado,
+    tipos: [...tiposSelecionados],
+    outrosDetalhe: tiposSelecionados.has('Outros') ? outrosDetalhe : '',
+    observacao: obs,
+    criadoEm: Date.now()
+  };
+
+  try{
+    const r = await fetch(DB_URL + '/registros.json', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
+    });
+    if(!r.ok) throw new Error('Falha ao gravar');
+    msg.className='msg ok'; msg.textContent='✅ Ocorrência registrada com sucesso!';
+
+    // reset parcial (mantém turma e data para agilizar próximos registros)
+    document.getElementById('fAluno').value='';
+    document.getElementById('fProfessor').value='';
+    document.getElementById('fObs').value='';
+    document.getElementById('fOutrosDetalhe').value='';
+    document.getElementById('outrosBox').style.display='none';
+    componenteSelecionado=null;
+    tiposSelecionados=new Set();
+    [...document.getElementById('pillComponentes').children].forEach(el=>el.classList.remove('selected'));
+    [...document.getElementById('pillTipos').children].forEach(el=>el.classList.remove('selected'));
+  }catch(e){
+    msg.className='msg err'; msg.textContent='❌ Não foi possível registrar agora. Verifique a conexão e tente novamente.';
+  }
+}
+
+/* =================== ADMIN =================== */
+function entrarAdmin(){
+  const senha = document.getElementById('senhaAdmin').value;
+  const msg = document.getElementById('msgLock');
+  if(senha === SENHA_ADMIN){
+    document.getElementById('adminLock').style.display='none';
+    document.getElementById('adminPainel').style.display='block';
+    carregarDados(true);
+  }else{
+    msg.className='msg err'; msg.textContent='Senha incorreta.';
+  }
+}
+
+async function carregarDados(aplicar){
+  try{
+    const r = await fetch(DB_URL + '/registros.json');
+    const data = await r.json();
+    registrosCache = data ? Object.keys(data).map(k=>({id:k, ...data[k]})) : [];
+    if(aplicar) aplicarFiltros();
+  }catch(e){
+    document.getElementById('tbodyResultados').innerHTML = '<tr><td colspan="7">Erro ao carregar dados.</td></tr>';
+  }
+}
+
+function aplicarFiltros(){
+  const turma = document.getElementById('rTurma').value;
+  const aluno = document.getElementById('rAluno').value;
+  const de = document.getElementById('rDe').value;
+  const ate = document.getElementById('rAte').value;
+
+  let lista = registrosCache.filter(r=>{
+    if(turma && r.turma!==turma) return false;
+    if(aluno && r.aluno!==aluno) return false;
+    if(de && r.data < de) return false;
+    if(ate && r.data > ate) return false;
+    if(filtroTiposSelecionados.size>0){
+      const tipos = r.tipos || [];
+      const bate = tipos.some(t=>filtroTiposSelecionados.has(t));
+      if(!bate) return false;
+    }
+    return true;
+  });
+
+  lista.sort((a,b)=> (b.data||'').localeCompare(a.data||'') || (b.criadoEm||0)-(a.criadoEm||0));
+
+  // tabela
+  const tbody = document.getElementById('tbodyResultados');
+  tbody.innerHTML='';
+  document.getElementById('semResultados').style.display = lista.length===0 ? 'block':'none';
+  document.getElementById('tabelaResultados').style.display = lista.length===0 ? 'none':'table';
+
+  lista.forEach(r=>{
+    const tr = document.createElement('tr');
+    const tiposHtml = (r.tipos||[]).map(t=>`<span class="tag">${t}</span>`).join('') +
+      (r.outrosDetalhe ? `<div style="font-size:11px;color:#555;margin-top:2px;">${escapeHtml(r.outrosDetalhe)}</div>` : '');
+    tr.innerHTML = `
+      <td>${formatarData(r.data)}</td>
+      <td>${escapeHtml(r.turma||'')}</td>
+      <td>${escapeHtml(r.aluno||'')}</td>
+      <td>${escapeHtml(r.componente||'')}</td>
+      <td>${escapeHtml(r.professor||'')}</td>
+      <td>${tiposHtml}</td>
+      <td>${escapeHtml(r.observacao||'')}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // resumo
+  const resumo = document.getElementById('resumoBox');
+  const contagem = {}; TIPOS.forEach(t=>contagem[t]=0);
+  lista.forEach(r=> (r.tipos||[]).forEach(t=> contagem[t]=(contagem[t]||0)+1));
+  resumo.innerHTML = `
+    <div class="box"><b>${lista.length}</b><span>Total de registros</span></div>
+    ${TIPOS.map(t=>`<div class="box"><b>${contagem[t]}</b><span>${t}</span></div>`).join('')}
+  `;
+
+  // top alunos
+  const porAluno = {};
+  lista.forEach(r=>{
+    const chave = `${r.aluno} — ${r.turma}`;
+    porAluno[chave] = (porAluno[chave]||0)+1;
+  });
+  const top = Object.entries(porAluno).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const topBox = document.getElementById('topAlunosBox');
+  if(top.length>0){
+    topBox.innerHTML = '<h3>Alunos com mais ocorrências (no filtro atual)</h3><ul class="toplist">' +
+      top.map(([nome,qtd])=>`<li><b>${qtd}</b> — ${escapeHtml(nome)}</li>`).join('') + '</ul>';
+  } else { topBox.innerHTML=''; }
+
+  // cabeçalho de impressão
+  const turmaTxt = turma || 'Todas as turmas';
+  const alunoTxt = aluno ? ` — ${aluno}` : '';
+  const periodoTxt = (de||ate) ? ` — Período: ${de?formatarData(de):'início'} a ${ate?formatarData(ate):'hoje'}` : '';
+  document.getElementById('printSubtitulo').textContent =
+    `${turmaTxt}${alunoTxt}${periodoTxt} · Gerado em ${new Date().toLocaleString('pt-BR')}`;
+}
+
+function exportarCSV(){
+  const linhas = [['Data','Turma','Aluno','Componente','Professor','Tipos','Detalhe Outros','Observação']];
+  const turma = document.getElementById('rTurma').value;
+  const aluno = document.getElementById('rAluno').value;
+  const de = document.getElementById('rDe').value;
+  const ate = document.getElementById('rAte').value;
+
+  let lista = registrosCache.filter(r=>{
+    if(turma && r.turma!==turma) return false;
+    if(aluno && r.aluno!==aluno) return false;
+    if(de && r.data < de) return false;
+    if(ate && r.data > ate) return false;
+    if(filtroTiposSelecionados.size>0){
+      const tipos = r.tipos || [];
+      if(!tipos.some(t=>filtroTiposSelecionados.has(t))) return false;
+    }
+    return true;
+  });
+  lista.sort((a,b)=> (b.data||'').localeCompare(a.data||''));
+
+  lista.forEach(r=>{
+    linhas.push([r.data, r.turma, r.aluno, r.componente, r.professor, (r.tipos||[]).join(' | '), r.outrosDetalhe||'', (r.observacao||'').replace(/\n/g,' ')]);
+  });
+
+  const csv = linhas.map(l=> l.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(["\uFEFF"+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`ocorrencias_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function formatarData(iso){
+  if(!iso) return '';
+  const [y,m,d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+init();
+</script>
+</body>
+</html>
