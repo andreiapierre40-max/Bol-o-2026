@@ -1,595 +1,695 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Urna do Grêmio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo+Mono:wght@400;600;700&family=Figtree:wght@400;500;600;700;800&display=swap">
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de Ocorrências — EE Maya Alice Ekman</title>
 <style>
-/* Layout: a single voting machine centered on the page — screen on the left, keypad on the right, stacking on phones; mesário panel opens below it. */
-:root {
-  --bg: #e9e6dd;            /* sala de aula, papel */
-  --case: #d8d2c2;          /* corpo bege da urna */
-  --case-edge: #b9b19c;
-  --screen: #f4f6ef;        /* tela */
-  --screen-ink: #1d2320;
-  --screen-line: #c6ccc0;
-  --key: #1f1f1f;
-  --key-ink: #f2f2f2;
-  --ink: #23221e;
-  --muted: #6b6758;
-  --white-key: #f7f7f2;
-  --orange: #e48a2a;
-  --green: #2f8a4c;
-  --accent: #1f5f8a;
-  --panel: #fbfaf6;
-  --line: #d6d1c3;
-  --danger: #b23a2b;
-  --font-ui: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-screen: "Chivo Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #17181a; --case: #3a372f; --case-edge: #2a2822;
-    --screen: #e9ecE2; --screen-ink: #1d2320; --screen-line: #c6ccc0;
-    --key: #0f0f0f; --key-ink: #ededed; --ink: #ecebe5; --muted: #a8a596;
-    --white-key: #ecece6; --orange: #e48a2a; --green: #34995a; --accent: #6fb0db;
-    --panel: #222326; --line: #3a3b3f; --danger: #e0705f; color-scheme: dark;
+  :root{
+    --navy:#1F3864;
+    --navy-dark:#152647;
+    --gold:#C9A227;
+    --gold-light:#FBF3DA;
+    --bg:#F2F4F8;
+    --gray:#6B7280;
+    --red:#B3261E;
+    --green:#1E7A34;
   }
-}
-:root[data-theme="dark"] {
-  --bg: #17181a; --case: #3a372f; --case-edge: #2a2822;
-  --screen: #e9ecE2; --screen-ink: #1d2320; --screen-line: #c6ccc0;
-  --key: #0f0f0f; --key-ink: #ededed; --ink: #ecebe5; --muted: #a8a596;
-  --white-key: #ecece6; --orange: #e48a2a; --green: #34995a; --accent: #6fb0db;
-  --panel: #222326; --line: #3a3b3f; --danger: #e0705f; color-scheme: dark;
-}
-* { box-sizing: border-box; }
-body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 16px; }
-.wrap { max-width: 1040px; margin: 0 auto; padding: 24px 16px 48px; display: grid; gap: 20px; }
-header.top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-header.top h1 { margin: 0; font-size: 1.35rem; font-weight: 800; letter-spacing: -0.01em; text-wrap: balance; }
-header.top p { margin: 2px 0 0; color: var(--muted); font-size: .9rem; }
-.status { font-size: .8rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); }
-.status.on { color: var(--green); border-color: var(--green); }
-.status.off { color: var(--danger); border-color: var(--danger); }
-
-/* ---------- urna ---------- */
-.urna { background: var(--case); border: 1px solid var(--case-edge); border-radius: 14px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(260px, 1fr); gap: 18px; box-shadow: 0 10px 30px -18px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.35); }
-@media (max-width: 760px) { .urna { grid-template-columns: 1fr; } }
-.tela { background: var(--screen); color: var(--screen-ink); border-radius: 6px; border: 6px solid #2b2b2b; min-height: 360px; display: flex; flex-direction: column; font-family: var(--font-screen); position: relative; overflow: hidden; min-width: 0; }
-.tela-body { flex: 1; padding: 18px 20px; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 16px; align-content: start; }
-.tela small.lbl { display: block; font-size: .78rem; letter-spacing: .04em; }
-.tela .cargo { font-family: var(--font-ui); font-weight: 700; font-size: 1.5rem; margin: 14px 0 18px; text-wrap: balance; }
-.num-row { display: flex; align-items: center; gap: 10px; font-size: .95rem; }
-.digits { display: flex; gap: 6px; }
-.digit { width: 44px; height: 54px; border: 2px solid var(--screen-ink); display: grid; place-items: center; font-size: 2rem; font-weight: 700; }
-.digit.cur { animation: blink 1s steps(1) infinite; }
-@keyframes blink { 50% { background: var(--screen-ink); } }
-@media (prefers-reduced-motion: reduce) { .digit.cur { animation: none; outline: 3px solid var(--screen-ink); outline-offset: 2px; } }
-.info { margin-top: 18px; font-size: .95rem; line-height: 1.6; }
-.info b { font-family: var(--font-ui); font-size: 1.15rem; }
-.aviso-grande { font-family: var(--font-ui); font-weight: 800; font-size: 1.9rem; margin-top: 14px; letter-spacing: .02em; }
-.foto { width: 110px; aspect-ratio: 3/4; max-width: 100%; border: 2px solid var(--screen-ink); display: grid; place-items: center; font-family: var(--font-ui); font-weight: 800; font-size: 1.8rem; text-align: center; padding: 6px; line-height: 1.1; }
-.foto.c1 { background: #cfe1ee; } .foto.c2 { background: #f3dcc0; }
-.tela-foot { border-top: 2px solid var(--screen-ink); padding: 10px 20px; font-size: .78rem; line-height: 1.7; }
-.tela-foot .k { display: inline-block; font-weight: 700; min-width: 7.5em; }
-.fim { position: absolute; inset: 0; background: var(--screen); display: grid; place-items: center; font-family: var(--font-ui); font-weight: 800; font-size: clamp(4rem, 14vw, 8rem); letter-spacing: .08em; }
-.fechada { position: absolute; inset: 0; background: var(--screen); display: grid; place-items: center; text-align: center; padding: 20px; font-family: var(--font-ui); }
-.fechada strong { display: block; font-size: 1.6rem; margin-bottom: 6px; }
-
-.teclado { background: #2a2a2a; border-radius: 8px; padding: 16px; display: grid; gap: 12px; align-content: start; }
-.teclado .marca { color: #cfcfcf; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; text-align: center; font-weight: 600; }
-.nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.nums .zero { grid-column: 2; }
-button { font: inherit; cursor: pointer; }
-.k-num { background: var(--key); color: var(--key-ink); border: 0; border-radius: 6px; height: 58px; font-size: 1.6rem; font-weight: 700; box-shadow: 0 3px 0 #000; transition: transform .05s; }
-.k-num:active, .k-act:active { transform: translateY(2px); box-shadow: 0 1px 0 #000; }
-.acoes { display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: 8px; align-items: end; }
-.k-act { border: 0; border-radius: 6px; font-weight: 800; font-size: .82rem; letter-spacing: .03em; color: #111; box-shadow: 0 3px 0 #000; height: 52px; padding: 0 4px; }
-.k-branco { background: var(--white-key); }
-.k-corrige { background: var(--orange); }
-.k-confirma { background: var(--green); color: #fff; height: 64px; font-size: .95rem; }
-button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-button:disabled { opacity: .5; cursor: not-allowed; }
-.foto { overflow: hidden; }
-.foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.foto.tem-img { padding: 0; background: #fff; }
-.opcoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-top: 18px; }
-.op { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; align-items: center; border: 2px solid var(--screen-line); padding: 8px; }
-.op .mini { width: 64px; aspect-ratio: 1; max-width: 100%; border: 2px solid var(--screen-ink); display: grid; place-items: center; font-family: var(--font-ui); font-weight: 800; font-size: 1.3rem; overflow: hidden; }
-.op .mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.op .mini.c1 { background: #cfe1ee; } .op .mini.c2 { background: #f3dcc0; }
-.op b { font-family: var(--font-ui); display: block; font-size: 1rem; overflow-wrap: anywhere; }
-.op span { font-size: .78rem; }
-.masc-edit { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 12px; align-items: center; }
-.masc-prev { width: 84px; aspect-ratio: 3/4; max-width: 100%; border: 1px dashed var(--line); border-radius: 8px; display: grid; place-items: center; overflow: hidden; color: var(--muted); font-size: .75rem; text-align: center; padding: 4px; background: var(--bg); }
-.masc-prev img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.masc-edit .acts { display: flex; gap: 8px; flex-wrap: wrap; }
-.file-btn { position: relative; overflow: hidden; }
-.file-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-
-/* ---------- mesário ---------- */
-.mesario-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: .88rem; }
-.btn { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 8px; padding: 9px 14px; font-weight: 600; font-size: .9rem; }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.btn.danger { color: var(--danger); border-color: var(--danger); background: transparent; }
-.painel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px; display: grid; gap: 22px; }
-.painel h2 { margin: 0; font-size: 1.1rem; }
-.painel h3 { margin: 0 0 10px; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.pin-box { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-input[type=text], input[type=password] { font: inherit; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 8px; padding: 9px 12px; min-width: 0; }
-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-.err { color: var(--danger); font-size: .88rem; }
-.ok { color: var(--green); font-size: .88rem; }
-.res-grid { display: grid; gap: 14px; }
-.res-row { display: grid; grid-template-columns: minmax(0, 12rem) minmax(0, 1fr) 5.5rem; gap: 12px; align-items: center; }
-@media (max-width: 560px) { .res-row { grid-template-columns: minmax(0,1fr) 5.5rem; } .res-row .bar { grid-column: 1 / -1; grid-row: 2; } }
-.res-row .nm { font-weight: 600; overflow-wrap: anywhere; }
-.res-row .nm span { color: var(--muted); font-weight: 400; font-size: .85rem; }
-.bar { height: 14px; background: var(--bg); border-radius: 4px; overflow: hidden; border: 1px solid var(--line); }
-.bar i { display: block; height: 100%; background: var(--accent); transition: width .4s; }
-.bar i.c2 { background: var(--orange); }
-.bar i.neutro { background: var(--muted); }
-.res-row .ct { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
-.res-row .ct small { display: block; font-weight: 400; color: var(--muted); font-size: .8rem; }
-.totais { display: flex; gap: 22px; flex-wrap: wrap; font-size: .92rem; color: var(--muted); }
-.totais b { color: var(--ink); font-variant-numeric: tabular-nums; }
-.vencedor { font-weight: 700; font-size: 1.05rem; }
-.cfg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
-.cfg-card { border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 10px; }
-.cfg-card label { display: grid; gap: 4px; font-size: .82rem; color: var(--muted); }
-.row-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-.nota { font-size: .85rem; color: var(--muted); line-height: 1.5; max-width: 65ch; }
-.nota.alerta { color: var(--danger); }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:Arial, Helvetica, sans-serif; background:var(--bg); color:#222;
+    padding-bottom:60px;
+  }
+  header.top{
+    background:linear-gradient(135deg, var(--navy), var(--navy-dark));
+    color:#fff; padding:18px 16px 14px; text-align:center;
+    border-bottom:4px solid var(--gold);
+  }
+  header.top h1{ margin:0 0 2px; font-size:19px; letter-spacing:.3px;}
+  header.top p{ margin:0; font-size:12px; opacity:.85;}
+  nav.tabs{
+    display:flex; max-width:640px; margin:14px auto 0; gap:8px; padding:0 12px;
+  }
+  nav.tabs button{
+    flex:1; padding:10px 6px; border-radius:10px 10px 0 0; border:1px solid #d8d8d8; border-bottom:none;
+    background:#e9ecf3; color:var(--navy); font-weight:bold; font-size:13px; cursor:pointer;
+  }
+  nav.tabs button.active{ background:#fff; color:var(--navy); border-color:var(--gold); box-shadow:0 -2px 0 var(--gold) inset;}
+  main{ max-width:640px; margin:0 auto; padding:0 12px 30px;}
+  .card{
+    background:#fff; border-radius:0 0 14px 14px; padding:18px 16px 22px; box-shadow:0 2px 10px rgba(0,0,0,.06);
+    border:1px solid #e3e6ee; border-top:none;
+  }
+  .card + .card{ margin-top:16px; border-radius:14px; border-top:1px solid #e3e6ee;}
+  h2{ color:var(--navy); font-size:16px; margin:0 0 12px;}
+  h3{ color:var(--navy); font-size:14px; margin:18px 0 8px;}
+  label{ display:block; font-size:13px; font-weight:bold; color:var(--navy); margin:14px 0 6px;}
+  select, input[type=text], input[type=date], textarea{
+    width:100%; padding:11px 10px; border:1.5px solid #cfd4e0; border-radius:8px; font-size:15px; font-family:inherit;
+    background:#fff;
+  }
+  select:focus, input:focus, textarea:focus{ outline:none; border-color:var(--navy);}
+  textarea{ resize:vertical; min-height:60px;}
+  .pillgrid{ display:flex; flex-wrap:wrap; gap:8px; margin-top:4px;}
+  .pill{
+    padding:9px 13px; border-radius:20px; border:1.5px solid #cfd4e0; background:#fff; color:#333;
+    font-size:13px; cursor:pointer; user-select:none; transition:.12s;
+  }
+  .pill.selected{ background:var(--navy); border-color:var(--navy); color:#fff; font-weight:bold;}
+  .pill.tipo.selected{ background:var(--gold); border-color:var(--gold); color:var(--navy-dark);}
+  .hint{ font-size:12px; color:var(--gray); margin-top:4px;}
+  .btn{
+    display:inline-block; width:100%; padding:13px; margin-top:20px; border:none; border-radius:10px;
+    background:var(--navy); color:#fff; font-size:15px; font-weight:bold; cursor:pointer;
+  }
+  .btn:active{ background:var(--navy-dark);}
+  .btn.secondary{ background:#fff; color:var(--navy); border:1.5px solid var(--navy);}
+  .btn.gold{ background:var(--gold); color:var(--navy-dark);}
+  .btn.small{ width:auto; padding:9px 14px; font-size:13px; margin-top:0;}
+  .row2{ display:flex; gap:10px;}
+  .row2 > div{ flex:1;}
+  .msg{
+    margin-top:14px; padding:12px 14px; border-radius:8px; font-size:13.5px; display:none;
+  }
+  .msg.ok{ background:#e6f4ea; color:var(--green); border:1px solid #b7ddc3; display:block;}
+  .msg.err{ background:#fbe9e7; color:var(--red); border:1px solid #f0c4bf; display:block;}
+  .lockbox{ text-align:center; padding:30px 10px;}
+  .lockbox input{ max-width:220px; margin:0 auto 12px; text-align:center;}
+  table.rep{ width:100%; border-collapse:collapse; margin-top:10px; font-size:12.5px;}
+  table.rep th{ background:var(--navy); color:#fff; padding:7px 6px; text-align:left;}
+  table.rep td{ padding:6px; border-bottom:1px solid #e3e6ee; vertical-align:top;}
+  table.rep tr:nth-child(even){ background:#f7f8fc;}
+  .tag{ display:inline-block; background:var(--gold-light); border:1px solid var(--gold); color:var(--navy-dark); border-radius:12px; padding:1px 8px; font-size:11px; margin:1px 2px 1px 0;}
+  .summary{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+  .summary .box{ flex:1; min-width:100px; background:var(--gold-light); border:1px solid var(--gold); border-radius:8px; padding:10px; text-align:center;}
+  .summary .box b{ display:block; font-size:20px; color:var(--navy);}
+  .summary .box span{ font-size:11px; color:var(--navy-dark);}
+  .toplist{ margin-top:10px; font-size:13px;}
+  .toplist li{ margin-bottom:4px;}
+  footer{ text-align:center; font-size:11px; color:var(--gray); margin-top:24px;}
+  #printHead{ display:none; }
+  @media print{
+    header.top, nav.tabs, #adminFilters, #adminActions, .no-print{ display:none !important; }
+    body{ background:#fff; padding:0;}
+    main{ max-width:100%; padding:0;}
+    .card{ box-shadow:none; border:none; padding:0;}
+    #printHead{ display:block; text-align:center; margin-bottom:14px; }
+    #printHead h1{ color:#1F3864; font-size:18px; margin:0 0 2px;}
+    #printHead p{ font-size:12px; color:#444; margin:0;}
+    table.rep th{ background:#1F3864 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  }
 </style>
+</head>
+<body>
 
-<div class="wrap">
-  <header class="top">
-    <div>
-      <h1 id="h-titulo">Eleição do Grêmio Estudantil</h1>
-      <p id="h-sub">Digite o número da chapa e aperte CONFIRMA</p>
+<div id="modalAlertaLimite" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+  <div style="background:#fff; border:6px solid #c62828; border-radius:14px; max-width:520px; width:100%; padding:28px 24px; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,0.4);">
+    <div style="font-size:44px; margin-bottom:8px;">⚠️</div>
+    <div style="font-size:19px; font-weight:800; color:#c62828; line-height:1.4; margin-bottom:20px;">
+      ESTE ALUNO CHEGOU NO LIMITE DAS OCORRÊNCIAS APÓS ORIENTAÇÃO RECEBIDA PELA EQUIPE GESTORA. ENCAMINHE-O À DIREÇÃO.
     </div>
-    <span class="status" id="status">Carregando…</span>
-  </header>
-
-  <section class="urna" aria-label="Urna de votação">
-    <div class="tela" id="tela" aria-live="polite">
-      <div class="tela-body" id="tela-body"></div>
-      <div class="tela-foot" id="tela-foot"></div>
-      <div class="fim" id="fim" hidden>FIM</div>
-      <div class="fechada" id="fechada" hidden><div><strong>Votação encerrada</strong>Aguarde o mesário.</div></div>
-    </div>
-    <div class="teclado">
-      <div class="marca">Grêmio Estudantil</div>
-      <div class="nums" id="nums"></div>
-      <div class="acoes">
-        <button class="k-act k-branco" id="k-branco" type="button">BRANCO</button>
-        <button class="k-act k-corrige" id="k-corrige" type="button">CORRIGE</button>
-        <button class="k-act k-confirma" id="k-confirma" type="button">CONFIRMA</button>
-      </div>
-    </div>
-  </section>
-
-  <div class="mesario-bar">
-    <span id="armazenamento"></span>
-    <button class="btn" id="abrir-mesario" type="button">Área do mesário</button>
+    <button class="btn" style="background:#c62828; width:100%;" onclick="confirmarRegistroComAlerta()">OK, ENTENDI — REGISTRAR MESMO ASSIM</button>
   </div>
-
-  <section class="painel" id="painel" hidden>
-    <div id="login">
-      <h2>Área do mesário</h2>
-      <p class="nota">Digite a senha para ver o resultado e configurar as chapas.</p>
-      <form class="pin-box" id="pin-form">
-        <input type="password" id="pin-input" inputmode="numeric" autocomplete="off" placeholder="Senha" aria-label="Senha do mesário">
-        <button class="btn primary" type="submit">Entrar</button>
-        <button class="btn" type="button" id="fechar-login">Cancelar</button>
-        <span class="err" id="pin-err" hidden>Senha incorreta. Tente de novo.</span>
-      </form>
-    </div>
-
-    <div id="admin" hidden style="display:grid; gap:24px">
-      <div class="row-actions" style="justify-content:space-between">
-        <h2>Apuração</h2>
-        <button class="btn" type="button" id="sair">Fechar área do mesário</button>
-      </div>
-      <div>
-        <div class="res-grid" id="resultado"></div>
-      </div>
-      <div class="totais" id="totais"></div>
-      <div class="vencedor" id="vencedor"></div>
-
-      <div>
-        <h3>Votação</h3>
-        <div class="row-actions">
-          <button class="btn" type="button" id="toggle-aberta"></button>
-          <span class="nota" id="aberta-nota"></span>
-        </div>
-      </div>
-
-      <div>
-        <h3>Chapas</h3>
-        <form id="cfg-form" style="display:grid; gap:14px">
-          <label style="display:grid; gap:4px; font-size:.82rem; color:var(--muted); max-width:28rem">Título da eleição
-            <input type="text" id="cfg-titulo" maxlength="80">
-          </label>
-          <div class="cfg-grid">
-            <div class="cfg-card">
-              <label>Nome da chapa 1 <input type="text" id="cfg-n1" maxlength="40"></label>
-              <label>Número (2 dígitos) <input type="text" id="cfg-num1" maxlength="2" inputmode="numeric"></label>
-              <label>Lema ou presidente <input type="text" id="cfg-l1" maxlength="60"></label>
-              <label>Nome do mascote <input type="text" id="cfg-m1" maxlength="40"></label>
-              <div class="masc-edit">
-                <div class="masc-prev" id="prev-1">Sem imagem</div>
-                <div class="acts">
-                  <span class="btn file-btn">Enviar imagem do mascote<input type="file" id="cfg-img1" accept="image/*" aria-label="Imagem do mascote da chapa 1"></span>
-                  <button class="btn" type="button" id="rm-img1">Remover</button>
-                </div>
-              </div>
-            </div>
-            <div class="cfg-card">
-              <label>Nome da chapa 2 <input type="text" id="cfg-n2" maxlength="40"></label>
-              <label>Número (2 dígitos) <input type="text" id="cfg-num2" maxlength="2" inputmode="numeric"></label>
-              <label>Lema ou presidente <input type="text" id="cfg-l2" maxlength="60"></label>
-              <label>Nome do mascote <input type="text" id="cfg-m2" maxlength="40"></label>
-              <div class="masc-edit">
-                <div class="masc-prev" id="prev-2">Sem imagem</div>
-                <div class="acts">
-                  <span class="btn file-btn">Enviar imagem do mascote<input type="file" id="cfg-img2" accept="image/*" aria-label="Imagem do mascote da chapa 2"></span>
-                  <button class="btn" type="button" id="rm-img2">Remover</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <label style="display:grid; gap:4px; font-size:.82rem; color:var(--muted); max-width:14rem">Senha do mesário
-            <input type="text" id="cfg-pin" maxlength="12" inputmode="numeric">
-          </label>
-          <div class="row-actions">
-            <button class="btn primary" type="submit">Salvar alterações</button>
-            <span id="cfg-msg" class="ok" hidden>Alterações salvas.</span>
-            <span id="cfg-err" class="err" hidden></span>
-          </div>
-        </form>
-      </div>
-
-      <div>
-        <h3>Zerar votos</h3>
-        <p class="nota">Use antes de começar a eleição de verdade, para apagar os votos de teste. Não dá para desfazer.</p>
-        <div class="row-actions">
-          <input type="text" id="zerar-input" placeholder='Digite ZERAR' aria-label="Confirmação para zerar">
-          <button class="btn danger" type="button" id="zerar-btn">Apagar todos os votos</button>
-          <span id="zerar-msg" class="ok" hidden>Votos apagados.</span>
-        </div>
-      </div>
-    </div>
-  </section>
 </div>
 
+
+<header class="top">
+  <h1>EE MAYA ALICE EKMAN</h1>
+  <p>Diretoria de Ensino – Região de São Vicente · Peruíbe/SP · Registro de Ocorrências</p>
+</header>
+
+<nav class="tabs">
+  <button id="tabRegistro" class="active" onclick="mostrarAba('registro')">📝 Registrar Ocorrência</button>
+  <button id="tabAdmin" onclick="mostrarAba('admin')">📊 Relatórios (Direção)</button>
+</nav>
+
+<main>
+
+  <!-- ==================== REGISTRO ==================== -->
+  <section id="viewRegistro" class="card">
+    <h2>Nova ocorrência</h2>
+
+    <label>Turma</label>
+    <select id="fTurma" onchange="popularAlunos()">
+      <option value="">Selecione a turma...</option>
+    </select>
+
+    <label>Aluno(a)</label>
+    <select id="fAluno" disabled>
+      <option value="">Selecione a turma primeiro...</option>
+    </select>
+
+    <div class="row2">
+      <div>
+        <label>Data</label>
+        <input type="date" id="fData">
+      </div>
+      <div>
+        <label>Responsável pelo preenchimento</label>
+        <input type="text" id="fProfessor" placeholder="Nome do(a) responsável">
+      </div>
+    </div>
+
+    <label>Componente Curricular</label>
+    <div class="pillgrid" id="pillComponentes"></div>
+
+    <label>Ocorrência (marque uma ou mais opções)</label>
+    <div class="pillgrid" id="pillTipos"></div>
+    <div id="outrosBox" style="display:none;">
+      <label>Descreva "Outros"</label>
+      <input type="text" id="fOutrosDetalhe" placeholder="Descrever brevemente...">
+    </div>
+
+    <label>Encaminhamento realizado (marque uma ou mais opções)</label>
+    <div class="pillgrid" id="pillEncaminhamentos"></div>
+
+    <label>Observação (opcional)</label>
+    <textarea id="fObs" placeholder="Detalhes adicionais, se necessário..."></textarea>
+
+    <button class="btn" onclick="verificarAntesDeRegistrar()">Registrar Ocorrência</button>
+    <div class="msg" id="msgRegistro"></div>
+  </section>
+
+  <!-- ==================== ADMIN (bloqueado) ==================== -->
+  <section id="viewAdmin" class="card" style="display:none;">
+
+    <div id="adminLock" class="lockbox" style="display:none;">
+      <h2>Acesso da Direção</h2>
+      <p style="font-size:13px;color:var(--gray);">Digite a senha para ver os relatórios.</p>
+      <input type="password" id="senhaAdmin" placeholder="Senha">
+      <br>
+      <button class="btn small" onclick="entrarAdmin()">Entrar</button>
+      <div class="msg" id="msgLock"></div>
+    </div>
+
+    <div id="adminPainel" style="display:block;">
+      <h2>Relatórios de Ocorrências</h2>
+
+      <div id="adminFilters">
+        <div class="row2">
+          <div>
+            <label>Turma</label>
+            <select id="rTurma" onchange="popularAlunoFiltro()">
+              <option value="">Todas as turmas</option>
+            </select>
+          </div>
+          <div>
+            <label>Aluno(a)</label>
+            <select id="rAluno"><option value="">Todos os alunos</option></select>
+          </div>
+        </div>
+        <div class="row2">
+          <div>
+            <label>De</label>
+            <input type="date" id="rDe">
+          </div>
+          <div>
+            <label>Até</label>
+            <input type="date" id="rAte">
+          </div>
+        </div>
+        <label>Tipo de ocorrência</label>
+        <div class="pillgrid" id="pillFiltroTipos"></div>
+
+        <button class="btn gold" onclick="aplicarFiltros()">🔍 Filtrar</button>
+      </div>
+
+      <div id="printHead">
+        <h1>EE MAYA ALICE EKMAN — Registro de Ocorrências</h1>
+        <p id="printSubtitulo"></p>
+      </div>
+
+      <div class="summary" id="resumoBox"></div>
+      <div id="topAlunosBox"></div>
+
+      <div id="adminActions" class="no-print" style="margin-top:16px; display:flex; gap:10px;">
+        <button class="btn secondary small" onclick="window.print()">🖨️ Imprimir Relatório</button>
+        <button class="btn secondary small" onclick="exportarCSV()">⬇️ Exportar CSV</button>
+        <button class="btn secondary small" onclick="imprimirFichasAlunos()">📄 Fichas por aluno (ciência dos pais)</button>
+        <button class="btn secondary small" onclick="carregarDados(true)">🔄 Atualizar</button>
+      </div>
+
+      <table class="rep" id="tabelaResultados">
+        <thead>
+          <tr>
+            <th>Data</th><th>Turma</th><th>Aluno(a)</th><th>Componente</th><th>Professor(a)</th><th>Ocorrência</th><th>Encaminhamento</th><th>Observação</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyResultados"></tbody>
+      </table>
+      <p id="semResultados" style="display:none; color:var(--gray); font-size:13px; margin-top:14px;">Nenhum registro encontrado para os filtros selecionados.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>EE Maya Alice Ekman · Registro interno de ocorrências</footer>
+
 <script>
-(function () {
-  const DEFAULT_CFG = {
-    titulo: "Eleição do Grêmio Estudantil",
-    chapas: [
-      { nome: "Chapa 1", numero: "10", lema: "", mascote: "", img: "" },
-      { nome: "Chapa 2", numero: "20", lema: "", mascote: "", img: "" }
-    ],
-    pin: "1234",
-    aberta: true
-  };
-  let cfg = JSON.parse(JSON.stringify(DEFAULT_CFG));
-  let db = null;            // namespace do banco compartilhado
-  let votosLocais = [];      // usado só quando o banco não está disponível
-  let votos = [];            // lista para apuração
-  let unsubVotos = null;
-  let numero = "";
-  let estado = "digitando"; // digitando | branco | fim
-  let ocupado = false;
+/* =================== DADOS =================== */
+const TURMAS = {
+  "6º ANO A": ["Alice Farias da Silva","Alice Inacio Ferreira","Ana Julia Pires Pereira","Anna Julia Dall Armi Matias","Caroline de Campos Lima","Davi Alves Fiuza","Flavio Bryan Nunes Queiros","Isabela da Silva de Souza","Joao Paulo Lima Costa","Kamilly Victoria Valentim do Nascimento","Kauanne Vitoria Bispo Jose","Laryssa Vitoria Pereira Miguel","Levi Rhangell de Oliveira Silva","Luiz Felipe Farias da Silva","Luiz Henrique Soares dos Santos","Manuella Barbosa do Nascimento","Marcos Vinicius Bastos de Souza","Matheus Antony Lima de Freitas","Miguel da Silva Rodrigues","Miguel Edvaldo Miranda Ribeiro","Miguel Soares de Oliveira","Murillo Vinicius Siqueira Werlich","Myllena Mikaela Almeida dos Santos","Nathan Ribeiro Previato","Paloma Oliveira Santana","Raissa da Silva dos Santos","Richard Estevam Pereira Sabino","Rodrigo José Batista de Souza","Sofia Vitoria Custodio Alves","Yuri da Silva Landim","Murilo de Alencar dos Santos","Miguel da Silva Pitta","Natally Ferreira dos Reis","Enzo Gabriel Alves Guimaraes","Bianca de Araujo","Luara Conceicao da Silva"],
+  "6º ANO B": ["Adam Rodrigues Kamoli Adedoyin","Alice Maria da Silva","Ana Karolina da Silva Lima","Bernardo Mantovani dos Santos","Bruno de Lima Soares","Bryan Siqueira Soares Barboza","Dafny Lemos de Sa","Daniel Lucio Henrique Veloso","Davi Lucca Crestani Marques Fava","Gabriel Ribeiro Silva","Gabriel Watson Biagioni Silva Costa","Heloisa Albuquerque Guimaraes de Freitas","Isabelly Chianca Latanzi","Isadora Anjos de Freitas","Joao Pedro Lima Costa","Julia Gomes de Sa Souza","Lara Karoline Silva Ramos","Larissa Raio de Sol dos Santos","Marcos Vinicius Becker Batista","Melissa Vitoria da Silva Lima","Miguel Lorenzo Alves Monteiro","Rafaella Luisa de Souza Fernandes","Rayssa Maciel da Silva","Ruan Guilherme Peres da Silva","Ruann Pablo da Silva Moraes","Sofhia Alves de Souza Araujo","Thayla Eva dos Reis Carvalho","Vitor Brucci Alves de Oliveira","Emerson Augusto Santos Junior","Mariah Guedes Silva dos Santos","Bernardo Araujo Caetano dos Santos","Leticia da Silva Santos","Josue Rodrigues Nascimento","Vitória Rocha de Oliveira","Raul de Paiva Fontes","Ivan Costa Ferreira"],
+  "7º ANO A": ["Alice Militao Martins Barra","Ana Beatriz dos Reis Santos Claro","Ana Julia Ribeiro da Costa","Anna Karolina da Silva Miranda","Anna Lysie Sousa Schunck","Arthur Ximenes Lins de Albuquerque","Breno Teixeira da Silva Nunes","Bryan Davy da Silva","Davi Henrique da Silva Marquiori","Davi Lucca Oliveira Marques","Lívia Soldi Oliveira","Enzo Rosa Hurtado","Felipe Arthur Almeida de Paula","Flavia Cristina Ferreira da Silva","Gabriel Vinicius Dutra dos Santos","Joao Vitor Lima Brito","José Roberto Hades Sales Oliveira","Julia Polline de Lima Silva","Kaio Aparecido Cabeca de Oliveira","Livia Helena Alves Santos","Manuela Ferreira Freire Conserino","Maria Luiza Ribeiro da Costa","Maria Vitoria Monteiro Batista","Mariana Cristina dos Santos Ramos","Matheus Henrique Lemos Lopes","Miguel Dela Libera Rios","Nycollas Phelipe de Souza Lourenco","Pedro Henrique Santana Almeida","Rafaela Sarilho","Talita Micaella Fernandes Moura Mendes","Keny Emanuel Calixto Leite","Tayna Vitoria Souza Nascimento","Davi Lucas dos Santos Rodrigues","Bianca Farias da Silva","Davi Becker Santos","Ananda Rebeca do Nascimento Bessa"],
+  "7º ANO B": ["Angelo Gabriel Goncalves Crespo Fazolin","Anna Julia da Conceicao","Arthur da Silva Lima","Arthur Martins Fontes Cantarella","Bruna Luzia Moreira Vinagre","Davi Fagundes de Jesus","Enzo Gabriel Dias Mendes","Fernanda de Godoy Ayres","Gabriel dos Santos Pinto","Gabriel Pereira de Souza","Guilherme Carvalho de Freitas Coelho","Hanna Beatriz Aparecida Lopes Duarte","Helena Machado Moraes","Henri Gabriel Lopes da Silva Rios","Jefferson Cristovao Araujo Souza","Joao Vitor Souza Santos","Juan Gabriel Ramalho de Castro","Kaio Borges dos Santos","Laura Ferreira Campos","Lorena Valenttina Santiago","Luna Marques da Silva Ortiz","Marco Antonio Souza Lira","Maria Eduarda Sousa dos Santos","Maria Vitoria Oliveira","Micaell Tayllor Ribeiro","Miguel Kevin Soares de Araujo","Pedro Henrique Santos de Paula","Pedro Silva Guimaraes","Rafaella Gomes Ramos","Sophia dos Santos Pereira","Sophia Santana Paramo","Vinicius Teixeira da Silva Nunes","Cesar Augusto Cordeiro de Campos","Sofia Tavares Gon Wenger","Luccas Rosa de Lima"],
+  "8º ANO A": ["Andre Kayc Santana dos Santos","Anna Clara Santos Vieira","Bryan de Oliveira Araujo Nora","Davi Reis de Oliveira Silva","Davi Vitor Lopes Maximiano","Edmilson Dias Pereira Neto","Enzo Aragao Silva","Felipe Santana Almeida dos Santos","Heloisa de Fatima Fernandes Santos","Hiago Aparecido Cabeca dos Santos","Higor Santos de Moraes","Isadora Pereira da Silva Rocha","Jady Gabrieli Medeiros Bomrruque","Joao Lucas de Oliveira de Souza","Julia Militao Ataide Nogueira","Layslla Goncalves de Oliveira","Livelly Emannuelly Silva dos Santos","Luiz Philipe Heidan de Almeida Lopes","Maria Eduarda Goncalves Vargas Ferreira","Marina Benedito Souza","Matheus Victor Pereira Ribeiro","Maxsuel de Paula Santos Lopes","Nathaly Santos Torres","Neilyn Vitória Sanches","Nicolle Castellan Vieira","Rafael de Souza Miranda","Rafaela Ferreira dos Santos","Rafaella Nogueira dos Santos","Robson Ferreira Gomes","Samuel Moreira Silva","Maria do Bonfim Silva Castro","Julia Vitoria Leal dos Santos","Heithor Santos Silva"],
+  "8º ANO B": ["Alice Fortes Lopes de Souza","Alice Maryana Soares de Oliveira","Ana Julya Lopes Maximiano","Arthur Araujo dos Santos","Arthur Inacio Ferreira","Caio Santos","Daniel Kauan da Silva Nunes","Davi Pereira Santos","Derick Lemos de Sa","Eric Gustavo de Almeida Souza","Fernanda Rovani Eufrazio dos Santos","Gabrielly da Silva Pupo","Guilherme de Castro Santos","Gustavo Carvalho Franca","Henrique Silva Souza","Hiago Santos de Moraes","Julia Catarina Goncalves de Jesus","Julia Gomes da Silva","Maria Eduarda Alves Santos","Miguel Alves Rodrigues Dias","Paulo Andre Regio da Silva Souza","Pedro Lucas Mostafe Bezerra","Rhayane Gomes da Silva Rodrigues","Riahn Guilherme de Oliveira Lima","Ricardo de Souza Miranda","Rubem Lopes dos Santos Lira","Salomao Henrique Ormundo Candido","Sofia Nogueira dos Santos","Valentina Mantovani dos Santos","Victor Gabriel Pereira da Silva","Victor Henzo Lauredo Martelli de Oliveira","Victoria Eduarda de Almeida Mota","Willian Krychijanowski Sa Teles","Júlia Abreu Salve e Jesus","Brayan Willian Chagas"],
+  "9º ANO A": ["Ana Julia de Freitas Alves","Ataue Gomes Pinto","Davi Salustiano dos Santos","Doralice Blosfeld de Albuquerque","Enzo Vitório de Freitas Marques","Gean Carlos Dutra dos Santos","Gustavo Andrade Lemos","Heloisa Victoria Rodrigues Machado","Ingrid Aguiar Bispo","Izabella dos Santos Diniz Camargo","Jullio Cesar Xavier da Silva Santos","Kaua Ricardo Almeida de Paula","Kauan Adriano da Silva Medeiros","Luca Sasori Gomes Kamia","Luciano Pereira dos Santos Filho","Luis Gustavo Santos de Souza","Micaella Ribeiro","Pedro Henrique Sabino de Lima","Perseu Henrique Patriota","Rayane Ribeiro dos Santos","Ana Carolina Lopes Freitas","Carlos Eduardo Ferreira da Silva","Pedro Henrique do Nascimento Silva","Matheus Laitz Tenorio Santos","Gabriel Mota Messias Martins","Jeferson Pereira Simões","Yan Mesquita Ricci"],
+  "9º ANO B": ["Allana Coimbra Freitas da Silva","Ana Clara da Silva Marquiori","Ana Livia da Silva Oliveira","Beatriz Rodrigues Almeida","Gabriel Henrique Ferreira Borges","Genival da Silva","Giovanna Ferreira de Godoy","Hevilyn Nardes Motta da Silva","Icaro Pereira da Silva","Lenita Emanuely Rodrigues Machado","Lucas Saymon Santos de Oliveira","Luna Estela Moreira Salvo","Lyncon Wesslley Silva dos Santos","Marcio Henrique Alves de Souza","Maria Luiza Mendes Santana","Max Xavier da Silva","Nicolas Eduardo Santos Oliveira","Pietro Davi Guitevein Pereira","Rodrigo Oliveira de Sena Kuhl","Saphira Clelia Franca","Sofia Lara Pereira Fontes","Vitor Bryan Adriano da Silva","Vitor Ramalho Gomes da Silva","Yan Carlos Ferreira Menezes","Israel Oliveira Garcia","Lorena da Roza Cardoso Baptista","Wesley Lima Mangabeira","Heloa da Silva Conceicao"]
+};
 
-  const $ = (id) => document.getElementById(id);
-  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const COMPONENTES = ["LP","MAT","OE (MAT)","OE (PORT)","CIÊN","ARTE","ED. FÍSICA","ELETIVAS","TECNO","ING","PRAT EXP","RED","HIST","GEO","PV","EMA","ROBÓTICA","OUTROS"];
+const TIPOS = ["Atraso","Não Realizou a Atividade","Indisciplina","Outros"];
+const ENCAMINHAMENTOS = ["Orientação individual ao estudante","Encaminhamento à Direção","Encaminhamento para a Tutoria"];
 
-  /* ---------- armazenamento local (reserva) ---------- */
-  function lerLocal() {
-    try {
-      const c = localStorage.getItem("urna-cfg"); if (c) cfg = Object.assign(cfg, JSON.parse(c));
-      const v = localStorage.getItem("urna-votos"); if (v) votosLocais = JSON.parse(v) || [];
-    } catch (e) {}
-  }
-  function salvarLocal() {
-    try {
-      localStorage.setItem("urna-cfg", JSON.stringify(cfg));
-      localStorage.setItem("urna-votos", JSON.stringify(votosLocais));
-    } catch (e) {}
-  }
+const DB_URL = "https://bolao-hexa-2026-default-rtdb.firebaseio.com/ocorrencias2026";
+const SENHA_ADMIN = "maya2026@";
 
-  /* ---------- som ---------- */
-  let audio = null;
-  function bip(fim) {
-    try {
-      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
-      const t = audio.currentTime;
-      const notas = fim ? [[1000, 0, .12], [1000, .16, .12], [1000, .32, .12], [1000, .48, .5]] : [[1100, 0, .06]];
-      notas.forEach(([f, s, d]) => {
-        const o = audio.createOscillator(), g = audio.createGain();
-        o.type = "square"; o.frequency.value = f; g.gain.value = .05;
-        o.connect(g).connect(audio.destination); o.start(t + s); o.stop(t + s + d);
-      });
-    } catch (e) {}
-  }
+const LISTA_ALERTA_ESPECIAL = [
+  "Richard Estevam Pereira Sabino","Hiago Santos de Moraes","Julia Vitoria Leal dos Santos","Israel Oliveira Garcia",
+  "Miguel da Silva Rodrigues","Daniel Kauan da Silva Nunes","Carlos Eduardo Ferreira da Silva","Davi Alves Fiuza",
+  "Pedro Henrique Sabino de Lima","Juan Gabriel Ramalho de Castro","Angelo Gabriel Goncalves Crespo Fazolin",
+  "Flavio Bryan Nunes Queiros","Yuri da Silva Landim","Miguel Soares de Oliveira","Ataue Gomes Pinto",
+  "Brayan Willian Chagas","Marco Antonio Souza Lira","Edmilson Dias Pereira Neto","Enzo Aragao Silva",
+  "Felipe Arthur Almeida de Paula","Nicolas Eduardo Santos Oliveira","Rafaella Luisa de Souza Fernandes"
+];
 
-  /* ---------- tela ---------- */
-  function chapaPorNumero(n) { return cfg.chapas.findIndex(c => c.numero === n); }
+let componenteSelecionado = null;
+let tiposSelecionados = new Set();
+let encaminhamentosSelecionados = new Set();
+let filtroTiposSelecionados = new Set();
+let registrosCache = [];
 
-  function renderTela() {
-    $("h-titulo").textContent = cfg.titulo;
-    document.title = "Urna do Grêmio";
-    $("fechada").hidden = cfg.aberta;
-    const body = $("tela-body"), foot = $("tela-foot");
-    const dig = [0, 1].map(i => `<div class="digit ${i === numero.length && estado === "digitando" ? "cur" : ""}">${esc(numero[i] || "")}</div>`).join("");
-    let esquerda = `<small class="lbl">SEU VOTO PARA</small><div class="cargo">Grêmio Estudantil</div>`;
-    let direita = "";
-    let rodape = "";
+/* =================== NAV =================== */
+function mostrarAba(aba){
+  document.getElementById('viewRegistro').style.display = aba==='registro' ? 'block' : 'none';
+  document.getElementById('viewAdmin').style.display = aba==='admin' ? 'block' : 'none';
+  document.getElementById('tabRegistro').classList.toggle('active', aba==='registro');
+  document.getElementById('tabAdmin').classList.toggle('active', aba==='admin');
+  if(aba==='admin'){ carregarDados(true); }
+}
 
-    if (estado === "branco") {
-      esquerda += `<div class="aviso-grande">VOTO EM BRANCO</div>`;
-      rodape = rodapeConfirmar();
-    } else {
-      esquerda += `<div class="num-row">Número: <div class="digits">${dig}</div></div>`;
-      if (numero.length === 2) {
-        const i = chapaPorNumero(numero);
-        if (i >= 0) {
-          const c = cfg.chapas[i];
-          esquerda += `<div class="info">Chapa: <b>${esc(c.nome)}</b>${c.mascote ? `<br>Mascote: ${esc(c.mascote)}` : ""}${c.lema ? `<br>${esc(c.lema)}` : ""}</div>`;
-          direita = c.img
-            ? `<div class="foto tem-img"><img src="${esc(c.img)}" alt="Mascote ${esc(c.mascote || c.nome)}"></div>`
-            : `<div class="foto c${i + 1}">${esc(c.numero)}</div>`;
-        } else {
-          esquerda += `<div class="info">NÚMERO ERRADO</div><div class="aviso-grande">VOTO NULO</div>`;
-        }
-        rodape = rodapeConfirmar();
-      } else {
-        esquerda += `<div class="opcoes">${cfg.chapas.map((c, i) => `
-          <div class="op">
-            <div class="mini c${i + 1}">${c.img ? `<img src="${esc(c.img)}" alt="">` : esc(c.numero)}</div>
-            <div><b>${esc(c.nome)}</b><span>Número ${esc(c.numero)}${c.mascote ? ` · ${esc(c.mascote)}` : ""}</span></div>
-          </div>`).join("")}</div>`;
-        rodape = `Digite os 2 números da chapa no teclado.<br>Para votar em branco, aperte <span class="k">BRANCO</span>`;
-      }
-    }
-    body.innerHTML = `<div>${esquerda}</div>${direita}`;
-    foot.innerHTML = rodape;
-  }
-  function rodapeConfirmar() {
-    return `Aperte a tecla:<br><span class="k">CONFIRMA</span> para CONFIRMAR este voto<br><span class="k">CORRIGE</span> para REINICIAR este voto`;
-  }
-
-  /* ---------- teclado ---------- */
-  function digitar(d) {
-    if (!cfg.aberta || estado !== "digitando" || numero.length >= 2 || ocupado) return;
-    bip(); numero += d; renderTela();
-  }
-  function corrigir() {
-    if (ocupado) return;
-    bip(); numero = ""; estado = "digitando"; renderTela();
-  }
-  function branco() {
-    if (!cfg.aberta || ocupado || numero.length > 0) return;
-    bip(); estado = "branco"; renderTela();
-  }
-  async function confirmar() {
-    if (!cfg.aberta || ocupado) return;
-    let opcao;
-    if (estado === "branco") opcao = "branco";
-    else if (numero.length === 2) { const i = chapaPorNumero(numero); opcao = i >= 0 ? "c" + (i + 1) : "nulo"; }
-    else return;
-    ocupado = true;
-    const voto = { opcao, em: Date.now() };
-    try {
-      if (db) await db.collection("votos").add(voto);
-      else { votosLocais.push(voto); salvarLocal(); votos = votosLocais.slice(); renderResultado(); }
-    } catch (e) {
-      ocupado = false;
-      $("tela-foot").innerHTML = `<span style="color:#b23a2b;font-weight:700">O voto não foi gravado. Verifique a internet e aperte CONFIRMA de novo.</span>`;
-      return;
-    }
-    bip(true);
-    $("fim").hidden = false;
-    setTimeout(() => { $("fim").hidden = true; numero = ""; estado = "digitando"; ocupado = false; renderTela(); }, 2500);
-  }
-
-  const nums = $("nums");
-  ["1","2","3","4","5","6","7","8","9","0"].forEach(d => {
-    const b = document.createElement("button");
-    b.type = "button"; b.className = "k-num" + (d === "0" ? " zero" : ""); b.textContent = d;
-    b.addEventListener("click", () => digitar(d));
-    nums.appendChild(b);
-  });
-  $("k-branco").addEventListener("click", branco);
-  $("k-corrige").addEventListener("click", corrigir);
-  $("k-confirma").addEventListener("click", confirmar);
-  document.addEventListener("keydown", (e) => {
-    if (e.target.closest && e.target.closest("input, #painel")) return;
-    if (/^[0-9]$/.test(e.key)) digitar(e.key);
-    else if (e.key === "Enter") { e.preventDefault(); confirmar(); }
-    else if (e.key === "Backspace" || e.key === "Escape") corrigir();
-    else if (e.key.toLowerCase() === "b") branco();
+/* =================== INIT =================== */
+function init(){
+  const selTurma = document.getElementById('fTurma');
+  const selRTurma = document.getElementById('rTurma');
+  Object.keys(TURMAS).forEach(t=>{
+    selTurma.appendChild(new Option(t, t));
+    selRTurma.appendChild(new Option(t, t));
   });
 
-  /* ---------- mesário ---------- */
-  let logado = false;
-  $("abrir-mesario").addEventListener("click", () => {
-    $("painel").hidden = false; $("abrir-mesario").hidden = true;
-    $("login").hidden = logado; $("admin").hidden = !logado;
-    if (!logado) $("pin-input").focus();
-    $("painel").scrollIntoView({ behavior: "smooth", block: "start" });
-  });
-  function fecharPainel() {
-    $("painel").hidden = true; $("abrir-mesario").hidden = false; $("pin-input").value = ""; $("pin-err").hidden = true;
-  }
-  $("fechar-login").addEventListener("click", fecharPainel);
-  $("sair").addEventListener("click", () => { logado = false; pararVotos(); fecharPainel(); });
-  $("pin-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    if ($("pin-input").value === String(cfg.pin)) {
-      logado = true; $("pin-err").hidden = true; $("login").hidden = true; $("admin").hidden = false;
-      preencherCfg(); ouvirVotos(); renderResultado();
-    } else { $("pin-err").hidden = false; }
-  });
-
-  function ouvirVotos() {
-    if (!db) { votos = votosLocais.slice(); renderResultado(); return; }
-    if (unsubVotos) return;
-    unsubVotos = db.collection("votos").onSnapshot(snap => {
-      votos = snap.docs.map(d => d.data()); renderResultado();
-    }, () => { $("totais").innerHTML = `<span class="err">Não foi possível ler os votos agora. Recarregue a página.</span>`; });
-  }
-  function pararVotos() { if (unsubVotos) { unsubVotos(); unsubVotos = null; } }
-
-  function renderResultado() {
-    if (!logado) return;
-    const cont = { c1: 0, c2: 0, branco: 0, nulo: 0 };
-    votos.forEach(v => { if (v && cont[v.opcao] !== undefined) cont[v.opcao]++; });
-    const total = votos.length, validos = cont.c1 + cont.c2;
-    const pct = (n, base) => base ? (n / base * 100).toFixed(1).replace(".", ",") + "%" : "0%";
-    const linhas = [
-      { nome: cfg.chapas[0].nome, sub: "nº " + cfg.chapas[0].numero, n: cont.c1, cls: "", base: validos },
-      { nome: cfg.chapas[1].nome, sub: "nº " + cfg.chapas[1].numero, n: cont.c2, cls: "c2", base: validos },
-      { nome: "Brancos", sub: "", n: cont.branco, cls: "neutro", base: total },
-      { nome: "Nulos", sub: "", n: cont.nulo, cls: "neutro", base: total }
-    ];
-    const max = Math.max(1, ...linhas.map(l => l.n));
-    $("resultado").innerHTML = linhas.map(l => `
-      <div class="res-row">
-        <div class="nm">${esc(l.nome)} ${l.sub ? `<span>${esc(l.sub)}</span>` : ""}</div>
-        <div class="bar"><i class="${l.cls}" style="width:${l.n / max * 100}%"></i></div>
-        <div class="ct">${l.n}<small>${pct(l.n, l.base)}${l.cls === "neutro" ? " do total" : " dos válidos"}</small></div>
-      </div>`).join("");
-    $("totais").innerHTML = `<span>Total de votos: <b>${total}</b></span><span>Votos válidos: <b>${validos}</b></span>`;
-    let v = "";
-    if (validos > 0) {
-      if (cont.c1 === cont.c2) v = "Empate entre as chapas.";
-      else v = `Vencendo: ${esc(cont.c1 > cont.c2 ? cfg.chapas[0].nome : cfg.chapas[1].nome)}`;
-    }
-    $("vencedor").textContent = v;
-    const tg = $("toggle-aberta");
-    tg.textContent = cfg.aberta ? "Encerrar votação" : "Reabrir votação";
-    tg.className = cfg.aberta ? "btn danger" : "btn primary";
-    $("aberta-nota").textContent = cfg.aberta ? "A urna está recebendo votos." : "A urna está bloqueada. Nenhum voto novo é aceito.";
-  }
-
-  function preencherCfg() {
-    $("cfg-titulo").value = cfg.titulo;
-    $("cfg-n1").value = cfg.chapas[0].nome; $("cfg-num1").value = cfg.chapas[0].numero; $("cfg-l1").value = cfg.chapas[0].lema || "";
-    $("cfg-n2").value = cfg.chapas[1].nome; $("cfg-num2").value = cfg.chapas[1].numero; $("cfg-l2").value = cfg.chapas[1].lema || "";
-    $("cfg-pin").value = cfg.pin;
-    $("cfg-m1").value = cfg.chapas[0].mascote || ""; $("cfg-m2").value = cfg.chapas[1].mascote || "";
-    imgEdit = [cfg.chapas[0].img || "", cfg.chapas[1].img || ""];
-    mostrarPrev(0); mostrarPrev(1);
-  }
-
-  /* imagens dos mascotes: reduzidas para caber no banco */
-  let imgEdit = ["", ""];
-  function mostrarPrev(i) {
-    const p = $("prev-" + (i + 1));
-    p.innerHTML = imgEdit[i] ? `<img src="${esc(imgEdit[i])}" alt="Mascote da chapa ${i + 1}">` : "Sem imagem";
-  }
-  function reduzirImagem(file) {
-    return new Promise((ok, falha) => {
-      const fr = new FileReader();
-      fr.onerror = falha;
-      fr.onload = () => {
-        const im = new Image();
-        im.onerror = falha;
-        im.onload = () => {
-          const max = 360, k = Math.min(1, max / Math.max(im.width, im.height));
-          const c = document.createElement("canvas");
-          c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
-          const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
-          g.drawImage(im, 0, 0, c.width, c.height);
-          ok(c.toDataURL("image/jpeg", 0.8));
-        };
-        im.src = fr.result;
-      };
-      fr.readAsDataURL(file);
-    });
-  }
-  [0, 1].forEach(i => {
-    $("cfg-img" + (i + 1)).addEventListener("change", async (e) => {
-      const f = e.target.files && e.target.files[0]; if (!f) return;
-      try { imgEdit[i] = await reduzirImagem(f); mostrarPrev(i); $("cfg-err").hidden = true; }
-      catch (err) { $("cfg-err").textContent = "Não consegui abrir essa imagem. Tente um arquivo JPG ou PNG."; $("cfg-err").hidden = false; }
-      e.target.value = "";
-    });
-    $("rm-img" + (i + 1)).addEventListener("click", () => { imgEdit[i] = ""; mostrarPrev(i); });
-  });
-
-  async function gravarCfg(novo) {
-    if (db) await db.doc("config/eleicao").set(novo);
-    cfg = novo; salvarLocal(); renderTela(); renderResultado();
-  }
-
-  $("cfg-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    $("cfg-msg").hidden = true; $("cfg-err").hidden = true;
-    const n1 = $("cfg-num1").value.trim(), n2 = $("cfg-num2").value.trim();
-    const erro = (m) => { $("cfg-err").textContent = m; $("cfg-err").hidden = false; };
-    if (!/^\d{2}$/.test(n1) || !/^\d{2}$/.test(n2)) return erro("Cada chapa precisa de um número com 2 dígitos, como 10 ou 25.");
-    if (n1 === n2) return erro("As duas chapas não podem ter o mesmo número.");
-    if (!$("cfg-pin").value.trim()) return erro("Defina uma senha para o mesário.");
-    const novo = {
-      titulo: $("cfg-titulo").value.trim() || DEFAULT_CFG.titulo,
-      chapas: [
-        { nome: $("cfg-n1").value.trim() || "Chapa 1", numero: n1, lema: $("cfg-l1").value.trim(), mascote: $("cfg-m1").value.trim(), img: imgEdit[0] },
-        { nome: $("cfg-n2").value.trim() || "Chapa 2", numero: n2, lema: $("cfg-l2").value.trim(), mascote: $("cfg-m2").value.trim(), img: imgEdit[1] }
-      ],
-      pin: $("cfg-pin").value.trim(),
-      aberta: cfg.aberta
+  const pillComp = document.getElementById('pillComponentes');
+  COMPONENTES.forEach(c=>{
+    const b = document.createElement('button');
+    b.type='button'; b.className='pill'; b.textContent=c;
+    b.onclick=()=>{ componenteSelecionado=c;
+      [...pillComp.children].forEach(el=>el.classList.remove('selected'));
+      b.classList.add('selected');
     };
-    try { await gravarCfg(novo); $("cfg-msg").hidden = false; setTimeout(() => $("cfg-msg").hidden = true, 2500); }
-    catch (err) { erro("Não foi possível salvar. Verifique a internet e tente de novo."); }
+    pillComp.appendChild(b);
   });
 
-  $("toggle-aberta").addEventListener("click", async () => {
-    try { await gravarCfg(Object.assign({}, cfg, { aberta: !cfg.aberta })); }
-    catch (e) { $("aberta-nota").textContent = "Não foi possível mudar. Verifique a internet."; }
+  const pillTipos = document.getElementById('pillTipos');
+  TIPOS.forEach(t=>{
+    const b = document.createElement('button');
+    b.type='button'; b.className='pill tipo'; b.textContent=t;
+    b.onclick=()=>{
+      if(tiposSelecionados.has(t)){ tiposSelecionados.delete(t); b.classList.remove('selected'); }
+      else{ tiposSelecionados.add(t); b.classList.add('selected'); }
+      document.getElementById('outrosBox').style.display = tiposSelecionados.has('Outros') ? 'block':'none';
+    };
+    pillTipos.appendChild(b);
   });
 
-  $("zerar-btn").addEventListener("click", async () => {
-    if ($("zerar-input").value.trim().toUpperCase() !== "ZERAR") { $("zerar-input").focus(); return; }
-    $("zerar-btn").disabled = true;
-    try {
-      if (db) {
-        const snap = await db.collection("votos").get();
-        for (const d of snap.docs) await db.doc("votos/" + d.id).delete();
-      } else { votosLocais = []; salvarLocal(); votos = []; renderResultado(); }
-      $("zerar-input").value = ""; $("zerar-msg").hidden = false; setTimeout(() => $("zerar-msg").hidden = true, 2500);
-    } catch (e) { $("zerar-msg").hidden = true; }
-    $("zerar-btn").disabled = false;
+  const pillEncam = document.getElementById('pillEncaminhamentos');
+  ENCAMINHAMENTOS.forEach(en=>{
+    const b = document.createElement('button');
+    b.type='button'; b.className='pill'; b.textContent=en;
+    b.onclick=()=>{
+      if(encaminhamentosSelecionados.has(en)){ encaminhamentosSelecionados.delete(en); b.classList.remove('selected'); }
+      else{ encaminhamentosSelecionados.add(en); b.classList.add('selected'); }
+    };
+    pillEncam.appendChild(b);
   });
 
-  /* ---------- início ---------- */
-  function setStatus() {
-    const s = $("status");
-    s.textContent = cfg.aberta ? "Votação aberta" : "Votação encerrada";
-    s.className = "status " + (cfg.aberta ? "on" : "off");
-    $("armazenamento").textContent = db
-      ? "Votos gravados na nuvem com segurança. Nenhum voto identifica o aluno."
-      : "Modo deste computador: os votos ficam salvos só neste navegador.";
+  const pillFiltro = document.getElementById('pillFiltroTipos');
+  TIPOS.forEach(t=>{
+    const b = document.createElement('button');
+    b.type='button'; b.className='pill tipo'; b.textContent=t;
+    b.onclick=()=>{
+      if(filtroTiposSelecionados.has(t)){ filtroTiposSelecionados.delete(t); b.classList.remove('selected'); }
+      else{ filtroTiposSelecionados.add(t); b.classList.add('selected'); }
+    };
+    pillFiltro.appendChild(b);
+  });
+
+  document.getElementById('fData').value = new Date().toISOString().slice(0,10);
+}
+
+function popularAlunos(){
+  const turma = document.getElementById('fTurma').value;
+  const sel = document.getElementById('fAluno');
+  sel.innerHTML='';
+  if(!turma){ sel.disabled=true; sel.appendChild(new Option('Selecione a turma primeiro...','')); return; }
+  sel.disabled=false;
+  sel.appendChild(new Option('Selecione o(a) aluno(a)...',''));
+  TURMAS[turma].forEach(a=> sel.appendChild(new Option(a,a)));
+}
+
+function popularAlunoFiltro(){
+  const turma = document.getElementById('rTurma').value;
+  const sel = document.getElementById('rAluno');
+  sel.innerHTML='';
+  sel.appendChild(new Option('Todos os alunos',''));
+  if(turma){ TURMAS[turma].forEach(a=> sel.appendChild(new Option(a,a))); }
+}
+
+/* =================== ALERTA DE LIMITE (LISTA FIXA) =================== */
+function verificarAntesDeRegistrar(){
+  const aluno = document.getElementById('fAluno').value;
+  if(LISTA_ALERTA_ESPECIAL.includes(aluno)){
+    document.getElementById('modalAlertaLimite').style.display = 'flex';
+    return;
+  }
+  registrarOcorrencia();
+}
+
+function confirmarRegistroComAlerta(){
+  document.getElementById('modalAlertaLimite').style.display = 'none';
+  registrarOcorrencia();
+}
+
+/* =================== REGISTRO =================== */
+async function registrarOcorrencia(){
+  const turma = document.getElementById('fTurma').value;
+  const aluno = document.getElementById('fAluno').value;
+  const data = document.getElementById('fData').value;
+  const professor = document.getElementById('fProfessor').value.trim();
+  const obs = document.getElementById('fObs').value.trim();
+  const outrosDetalhe = document.getElementById('fOutrosDetalhe').value.trim();
+  const msg = document.getElementById('msgRegistro');
+
+  if(!turma || !aluno || !data || !professor || !componenteSelecionado || tiposSelecionados.size===0){
+    msg.className='msg err'; msg.textContent='Preencha turma, aluno, data, professor(a), componente curricular e marque ao menos um tipo de ocorrência.';
+    return;
   }
 
-  lerLocal(); renderTela(); setStatus();
+  const payload = {
+    turma, aluno, data, professor,
+    componente: componenteSelecionado,
+    tipos: [...tiposSelecionados],
+    outrosDetalhe: tiposSelecionados.has('Outros') ? outrosDetalhe : '',
+    encaminhamentos: [...encaminhamentosSelecionados],
+    observacao: obs,
+    criadoEm: Date.now()
+  };
 
-  (async () => {
-    try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) { db = null; }
-    if (db) {
-      db.doc("config/eleicao").onSnapshot(snap => {
-        if (snap.exists) { const d = snap.data(); cfg = JSON.parse(JSON.stringify(Object.assign({}, DEFAULT_CFG, d))); }
-        renderTela(); setStatus(); renderResultado();
-      }, () => {});
+  try{
+    const r = await fetch(DB_URL + '/registros.json', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
+    });
+    if(!r.ok) throw new Error('Falha ao gravar');
+    msg.className='msg ok'; msg.textContent='✅ Ocorrência registrada com sucesso!';
+
+    // reset parcial (mantém turma e data para agilizar próximos registros)
+    document.getElementById('fAluno').value='';
+    document.getElementById('fProfessor').value='';
+    document.getElementById('fObs').value='';
+    document.getElementById('fOutrosDetalhe').value='';
+    document.getElementById('outrosBox').style.display='none';
+    componenteSelecionado=null;
+    tiposSelecionados=new Set();
+    encaminhamentosSelecionados=new Set();
+    [...document.getElementById('pillComponentes').children].forEach(el=>el.classList.remove('selected'));
+    [...document.getElementById('pillTipos').children].forEach(el=>el.classList.remove('selected'));
+    [...document.getElementById('pillEncaminhamentos').children].forEach(el=>el.classList.remove('selected'));
+  }catch(e){
+    msg.className='msg err'; msg.textContent='❌ Não foi possível registrar agora. Verifique a conexão e tente novamente.';
+  }
+}
+
+/* =================== ADMIN =================== */
+function entrarAdmin(){
+  const senha = document.getElementById('senhaAdmin').value;
+  const msg = document.getElementById('msgLock');
+  if(senha === SENHA_ADMIN){
+    document.getElementById('adminLock').style.display='none';
+    document.getElementById('adminPainel').style.display='block';
+    carregarDados(true);
+  }else{
+    msg.className='msg err'; msg.textContent='Senha incorreta.';
+  }
+}
+
+async function carregarDados(aplicar){
+  try{
+    const r = await fetch(DB_URL + '/registros.json');
+    const data = await r.json();
+    registrosCache = data ? Object.keys(data).map(k=>({id:k, ...data[k]})) : [];
+    if(aplicar) aplicarFiltros();
+  }catch(e){
+    document.getElementById('tbodyResultados').innerHTML = '<tr><td colspan="7">Erro ao carregar dados.</td></tr>';
+  }
+}
+
+function aplicarFiltros(){
+  const turma = document.getElementById('rTurma').value;
+  const aluno = document.getElementById('rAluno').value;
+  const de = document.getElementById('rDe').value;
+  const ate = document.getElementById('rAte').value;
+
+  let lista = registrosCache.filter(r=>{
+    if(turma && r.turma!==turma) return false;
+    if(aluno && r.aluno!==aluno) return false;
+    if(de && r.data < de) return false;
+    if(ate && r.data > ate) return false;
+    if(filtroTiposSelecionados.size>0){
+      const tipos = r.tipos || [];
+      const bate = tipos.some(t=>filtroTiposSelecionados.has(t));
+      if(!bate) return false;
     }
-    setStatus();
-  })();
+    return true;
+  });
 
-  const origRender = renderResultado;
-  renderResultado = function () { origRender(); setStatus(); };
-})();
+  lista.sort((a,b)=> (b.data||'').localeCompare(a.data||'') || (b.criadoEm||0)-(a.criadoEm||0));
+
+  // tabela
+  const tbody = document.getElementById('tbodyResultados');
+  tbody.innerHTML='';
+  document.getElementById('semResultados').style.display = lista.length===0 ? 'block':'none';
+  document.getElementById('tabelaResultados').style.display = lista.length===0 ? 'none':'table';
+
+  lista.forEach(r=>{
+    const tr = document.createElement('tr');
+    const tiposHtml = (r.tipos||[]).map(t=>`<span class="tag">${t}</span>`).join('') +
+      (r.outrosDetalhe ? `<div style="font-size:11px;color:#555;margin-top:2px;">${escapeHtml(r.outrosDetalhe)}</div>` : '');
+    const encamHtml = (r.encaminhamentos||[]).map(en=>`<span class="tag">${en}</span>`).join('');
+    tr.innerHTML = `
+      <td>${formatarData(r.data)}</td>
+      <td>${escapeHtml(r.turma||'')}</td>
+      <td>${escapeHtml(r.aluno||'')}</td>
+      <td>${escapeHtml(r.componente||'')}</td>
+      <td>${escapeHtml(r.professor||'')}</td>
+      <td>${tiposHtml}</td>
+      <td>${encamHtml}</td>
+      <td>${escapeHtml(r.observacao||'')}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // resumo
+  const resumo = document.getElementById('resumoBox');
+  const contagem = {}; TIPOS.forEach(t=>contagem[t]=0);
+  lista.forEach(r=> (r.tipos||[]).forEach(t=> contagem[t]=(contagem[t]||0)+1));
+  resumo.innerHTML = `
+    <div class="box"><b>${lista.length}</b><span>Total de registros</span></div>
+    ${TIPOS.map(t=>`<div class="box"><b>${contagem[t]}</b><span>${t}</span></div>`).join('')}
+  `;
+
+  // top alunos
+  const porAluno = {};
+  lista.forEach(r=>{
+    const chave = `${r.aluno} — ${r.turma}`;
+    porAluno[chave] = (porAluno[chave]||0)+1;
+  });
+  const top = Object.entries(porAluno).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const topBox = document.getElementById('topAlunosBox');
+  if(top.length>0){
+    topBox.innerHTML = '<h3>Alunos com mais ocorrências (no filtro atual)</h3><ul class="toplist">' +
+      top.map(([nome,qtd])=>`<li><b>${qtd}</b> — ${escapeHtml(nome)}</li>`).join('') + '</ul>';
+  } else { topBox.innerHTML=''; }
+
+  // cabeçalho de impressão
+  const turmaTxt = turma || 'Todas as turmas';
+  const alunoTxt = aluno ? ` — ${aluno}` : '';
+  const periodoTxt = (de||ate) ? ` — Período: ${de?formatarData(de):'início'} a ${ate?formatarData(ate):'hoje'}` : '';
+  document.getElementById('printSubtitulo').textContent =
+    `${turmaTxt}${alunoTxt}${periodoTxt} · Gerado em ${new Date().toLocaleString('pt-BR')}`;
+}
+
+function exportarCSV(){
+  const linhas = [['Data','Turma','Aluno','Componente','Professor','Tipos','Detalhe Outros','Encaminhamento','Observação']];
+  const turma = document.getElementById('rTurma').value;
+  const aluno = document.getElementById('rAluno').value;
+  const de = document.getElementById('rDe').value;
+  const ate = document.getElementById('rAte').value;
+
+  let lista = registrosCache.filter(r=>{
+    if(turma && r.turma!==turma) return false;
+    if(aluno && r.aluno!==aluno) return false;
+    if(de && r.data < de) return false;
+    if(ate && r.data > ate) return false;
+    if(filtroTiposSelecionados.size>0){
+      const tipos = r.tipos || [];
+      if(!tipos.some(t=>filtroTiposSelecionados.has(t))) return false;
+    }
+    return true;
+  });
+  lista.sort((a,b)=> (b.data||'').localeCompare(a.data||''));
+
+  lista.forEach(r=>{
+    linhas.push([r.data, r.turma, r.aluno, r.componente, r.professor, (r.tipos||[]).join(' | '), r.outrosDetalhe||'', (r.encaminhamentos||[]).join(' | '), (r.observacao||'').replace(/\n/g,' ')]);
+  });
+
+  const csv = linhas.map(l=> l.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(["\uFEFF"+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`ocorrencias_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* =================== FICHAS POR ALUNO (CIÊNCIA DOS PAIS) =================== */
+function listaFiltradaAtual(){
+  const turma = document.getElementById('rTurma').value;
+  const aluno = document.getElementById('rAluno').value;
+  const de = document.getElementById('rDe').value;
+  const ate = document.getElementById('rAte').value;
+  return registrosCache.filter(r=>{
+    if(turma && r.turma!==turma) return false;
+    if(aluno && r.aluno!==aluno) return false;
+    if(de && r.data < de) return false;
+    if(ate && r.data > ate) return false;
+    if(filtroTiposSelecionados.size>0){
+      if(!(r.tipos||[]).some(t=>filtroTiposSelecionados.has(t))) return false;
+    }
+    return true;
+  });
+}
+
+function imprimirFichasAlunos(){
+  const lista = listaFiltradaAtual();
+  if(lista.length===0){ alert('Nenhum registro no filtro atual. Ajuste os filtros e clique em Filtrar.'); return; }
+  const de = document.getElementById('rDe').value;
+  const ate = document.getElementById('rAte').value;
+  const periodoTxt = (de||ate) ? `${de?formatarData(de):'início do ano letivo'} a ${ate?formatarData(ate):formatarData(new Date().toISOString().slice(0,10))}` : 'todos os registros até a presente data';
+
+  // agrupa por aluno (ordenado por turma e nome)
+  const grupos = {};
+  lista.forEach(r=>{ const k = (r.turma||'')+'||'+(r.aluno||''); (grupos[k]=grupos[k]||[]).push(r); });
+  const chaves = Object.keys(grupos).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+
+  const hoje = new Date();
+  const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  const dataExtenso = `${hoje.getDate()} de ${meses[hoje.getMonth()]} de ${hoje.getFullYear()}`;
+
+  const paginas = chaves.map(k=>{
+    const [turma, aluno] = k.split('||');
+    const regs = grupos[k].sort((a,b)=>(a.data||'').localeCompare(b.data||'') || (a.criadoEm||0)-(b.criadoEm||0));
+    const cont = {}; regs.forEach(r=>(r.tipos||[]).forEach(t=>cont[t]=(cont[t]||0)+1));
+    const resumo = Object.entries(cont).map(([t,q])=>`${escapeHtml(t)}: <b>${q}</b>`).join(' &nbsp;·&nbsp; ');
+    const linhas = regs.map(r=>`
+      <tr>
+        <td class="c">${formatarData(r.data)}</td>
+        <td class="c">${escapeHtml(r.componente||'')}</td>
+        <td>${escapeHtml((r.tipos||[]).join(', '))}${r.outrosDetalhe?`<br><small>${escapeHtml(r.outrosDetalhe)}</small>`:''}</td>
+        <td>${escapeHtml((r.encaminhamentos||[]).join(', '))}</td>
+        <td>${escapeHtml(r.observacao||'')}</td>
+        <td>${escapeHtml(r.professor||'')}</td>
+      </tr>`).join('');
+    return `
+    <section class="pagina">
+      <div class="timbre">
+        <div class="t1">GOVERNO DO ESTADO DE SÃO PAULO</div>
+        <div class="t2">SECRETARIA DA EDUCAÇÃO · DIRETORIA DE ENSINO – REGIÃO DE SÃO VICENTE</div>
+        <div class="t3">EE MAYA ALICE EKMAN · CIE 036936 · PERUÍBE/SP</div>
+      </div>
+      <h1>COMUNICADO DE OCORRÊNCIAS ESCOLARES</h1>
+      <h2>Ciência do(a) Responsável</h2>
+      <table class="ident">
+        <tr><th>Aluno(a)</th><td>${escapeHtml(aluno)}</td><th>Turma</th><td>${escapeHtml(turma)}</td></tr>
+        <tr><th>Período</th><td>${periodoTxt}</td><th>Total</th><td><b>${regs.length}</b> registro(s)</td></tr>
+      </table>
+      <p class="texto">Senhor(a) Responsável, comunicamos que foram registradas as ocorrências abaixo envolvendo o(a) estudante, no período indicado. Solicitamos o acompanhamento da família e o diálogo com o(a) estudante, reforçando a importância da pontualidade, da realização das atividades e do respeito às normas de convivência previstas no Regimento Escolar. A equipe escolar permanece à disposição para atendimento.</p>
+      <p class="resumo">${resumo}</p>
+      <table class="ocorr">
+        <thead><tr><th style="width:68px">Data</th><th style="width:70px">Componente</th><th>Tipo</th><th>Encaminhamento</th><th>Observação</th><th style="width:90px">Registrado por</th></tr></thead>
+        <tbody>${linhas}</tbody>
+      </table>
+      <div class="obsresp"><b>Observações do(a) responsável (opcional):</b><div class="linha"></div><div class="linha"></div></div>
+      <p class="decl">Declaro que tomei ciência das ocorrências acima relacionadas e das orientações da escola.</p>
+      <div class="assin">
+        <div><div class="campo"></div>Nome do(a) responsável</div>
+        <div><div class="campo"></div>Assinatura do(a) responsável</div>
+        <div class="pequeno"><div class="campo"></div>Data</div>
+      </div>
+      <div class="assin dir">
+        <div><div class="campo"></div>Direção / Equipe Gestora</div>
+      </div>
+      <div class="rodape">Peruíbe, ${dataExtenso}.</div>
+    </section>`;
+  }).join('');
+
+  const html = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Fichas de Ciência – Ocorrências</title>
+  <style>
+    @page{ size:A4; margin:14mm 14mm; }
+    *{ box-sizing:border-box; }
+    body{ font-family:Arial, Helvetica, sans-serif; color:#222; margin:0; font-size:11.5px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .barra{ position:sticky; top:0; background:#1F3864; color:#fff; padding:10px 16px; display:flex; gap:12px; align-items:center; }
+    .barra button{ background:#C9A227; color:#1F3864; border:0; padding:8px 16px; font-weight:bold; border-radius:6px; cursor:pointer; }
+    .pagina{ max-width:190mm; margin:12px auto; background:#fff; page-break-after:always; break-after:page; }
+    .pagina:last-child{ page-break-after:auto; break-after:auto; }
+    .timbre{ text-align:center; border-bottom:3px solid #C9A227; padding-bottom:6px; margin-bottom:10px; }
+    .t1{ font-weight:bold; color:#1F3864; font-size:13px; } .t2{ font-size:10.5px; color:#1F3864; } .t3{ font-weight:bold; font-size:11.5px; color:#1F3864; }
+    h1{ text-align:center; color:#1F3864; font-size:15px; margin:6px 0 0; } h2{ text-align:center; color:#9a7a12; font-size:12px; margin:2px 0 10px; font-weight:normal; }
+    table{ width:100%; border-collapse:collapse; }
+    .ident th{ background:#1F3864; color:#fff; text-align:left; padding:5px 7px; width:70px; font-size:11px; }
+    .ident td{ border:1px solid #c8cfdd; padding:5px 7px; }
+    .texto{ text-align:justify; line-height:1.45; margin:10px 0 6px; }
+    .resumo{ background:#fbf5e1; border-left:4px solid #C9A227; padding:5px 8px; margin:6px 0 8px; }
+    .ocorr th{ background:#1F3864; color:#fff; padding:5px; font-size:10.5px; text-align:left; }
+    .ocorr td{ border:1px solid #c8cfdd; padding:4px 5px; vertical-align:top; font-size:10.5px; }
+    .ocorr tr:nth-child(even) td{ background:#f4f6fa; } .c{ text-align:center; white-space:nowrap; }
+    .ocorr tr{ page-break-inside:avoid; }
+    .obsresp{ margin-top:12px; } .linha{ border-bottom:1px solid #888; height:20px; }
+    .decl{ margin:14px 0 4px; font-weight:bold; color:#1F3864; }
+    .assin{ display:flex; gap:18px; margin-top:26px; text-align:center; font-size:10.5px; page-break-inside:avoid; }
+    .assin > div{ flex:1; } .assin .pequeno{ flex:0 0 110px; }
+    .assin.dir{ justify-content:flex-end; } .assin.dir > div{ flex:0 0 45%; }
+    .campo{ border-bottom:1px solid #222; height:22px; margin-bottom:3px; }
+    .rodape{ text-align:right; margin-top:14px; font-size:10.5px; }
+    @media print{ .barra{ display:none; } .pagina{ margin:0; } }
+  </style></head><body>
+  <div class="barra no-print"><span>${chaves.length} ficha(s) gerada(s) — uma página por aluno</span><button onclick="window.print()">🖨️ Imprimir</button></div>
+  ${paginas}
+  </body></html>`;
+
+  const w = window.open('', '_blank');
+  if(!w){ alert('O navegador bloqueou a nova janela. Permita pop-ups para este site e tente novamente.'); return; }
+  w.document.open(); w.document.write(html); w.document.close();
+}
+
+function formatarData(iso){
+  if(!iso) return '';
+  const [y,m,d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+init();
 </script>
-
-</body></html>
+</body>
+</html>
